@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{Lesson title}</title>
+<link rel="stylesheet" href="assets/course.css">
+<!--
+  Template for a tutor lesson. Replace every {placeholder}. Keep the order of sections.
+  Rules that live in SKILL.md: one tightly scoped win, short, cited, both a warm-up and skills
+  practice, equal-length quiz options with the correct position varied, no prompt queued per click.
+  Lavish serves only this directory and below, so every link is relative and inside lessons/.
+-->
+<!-- Revisions registry: add one entry per round of Tutor notes, oldest first. Remove this block on a first draft.
+<script type="application/json" data-lavish-revisions>
+[{ "id": "r1", "label": "Session 1 notes", "timestamp": "{ISO timestamp}", "summary": "{what was added}" }]
+</script>
+-->
+</head>
+<body data-lesson="{NNNN-slug}">
+<article class="lesson">
+
+  <header>
+    <span class="kicker">Lesson {NNNN} of {Mission topic}</span>
+    <h1>{Lesson title}</h1>
+    <p class="lede">{One sentence: the single tangible win this lesson gives, tied to the mission.}</p>
+    <p class="meta">About {5} minutes. Builds on <a href="{NNNN-previous}.html">{previous lesson title}</a>.</p>
+  </header>
+
+  <!-- Warm-up: two or three retrieval questions from earlier learning records and glossary terms.
+       Skip this block only in the first lesson. -->
+  <section class="warmup">
+    <h2>Before we start</h2>
+    <form class="quiz" data-tutor-quiz="warmup" data-lavish-question="warmup">
+      <fieldset data-q="w1" data-answer="{b}">
+        <legend>{Retrieval question from an earlier lesson}</legend>
+        <label><input type="radio" name="w1" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="w1" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="w1" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      <fieldset data-q="w2" data-answer="{a}">
+        <legend>{Retrieval question from a different earlier topic}</legend>
+        <label><input type="radio" name="w2" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="w2" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="w2" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      <div class="actions">
+        <button type="submit">Submit warm-up</button>
+        <span class="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- Knowledge: only what the skill of this lesson requires. Cite every claim. -->
+  <section>
+    <h2>{Knowledge heading}</h2>
+    <p>{The idea, in plain words. Link claims to sources: <a href="{url}">{source name}</a>.}</p>
+
+    <figure>
+      <svg viewBox="0 0 640 220" role="img" aria-labelledby="fig1-title">
+        <title id="fig1-title">{What the figure shows}</title>
+        <!-- Hand-authored inline SVG per the Lavish diagram playbook. Use the .fig-* classes so it follows the theme. -->
+        <rect class="fig-panel" x="20" y="40" width="180" height="70" rx="8"></rect>
+        <text class="fig-ink" x="110" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16">{Box A}</text>
+        <path class="fig-accent" d="M200 75 H 300" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect class="fig-panel" x="300" y="40" width="180" height="70" rx="8"></rect>
+        <text class="fig-ink" x="390" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16">{Box B}</text>
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption>{Figure 1. One sentence that says what to look at.}</figcaption>
+    </figure>
+
+    <div class="callout">{The one thing to remember from this section.}</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>{Column}</th><th>{Column}</th><th>{Column}</th></tr></thead>
+        <tbody>
+          <tr><td>{cell}</td><td>{cell}</td><td>{cell}</td></tr>
+          <tr><td>{cell}</td><td>{cell}</td><td>{cell}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- A Tutor note looks like this. Only the tutor adds them, during a session, directly under the element the user asked about.
+    <details class="tutor-note" data-lavish-revision="r1">
+      <summary>{One-line summary of the question}</summary>
+      <p>{The answer worth keeping: a figure, a table, a worked example, a corrected misconception.}</p>
+    </details>
+    -->
+  </section>
+
+  <!-- Skills: closed questions with instant feedback, one submission; at least one open question. -->
+  <section>
+    <h2>Practice</h2>
+    <form class="quiz" data-tutor-quiz="quiz" data-lavish-question="quiz">
+      <fieldset data-q="q1" data-answer="{c}">
+        <legend>{Question that needs the idea, not the words}</legend>
+        <label><input type="radio" name="q1" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="q1" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="q1" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      <fieldset data-q="q2" data-answer="{a}">
+        <legend>{Second question, a different angle on the same idea}</legend>
+        <label><input type="radio" name="q2" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="q2" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="q2" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      <div class="actions">
+        <button type="submit">Submit results</button>
+        <span class="status"></span>
+      </div>
+    </form>
+
+    <h3>In your own words</h3>
+    <form class="open" data-tutor-open data-q="o1" data-lavish-question="open-o1"
+          data-rubric="{What a complete answer must contain, as a short list the tutor grades against.}">
+      <p class="question">{Explain-it-back prompt, as if to a colleague who was not here.}</p>
+      <textarea name="answer" placeholder="Write from memory, then send."></textarea>
+      <div class="actions">
+        <button type="submit">Send to tutor</button>
+        <span class="status"></span>
+      </div>
+    </form>
+
+    <!-- Whiteboard exercise: only when a success criterion in MISSION.md is a drawing or a flow to reproduce.
+         Needs lessons/assets/whiteboard.js, generated from `npx -y lavish-axi design` the first time.
+    <section class="whiteboard-exercise">
+      <h3>Draw it from memory</h3>
+      <p>{What to draw. The boxes are given; add the arrows and labels.}</p>
+      <div class="mermaid">
+flowchart LR
+  A[{Box A}]
+  B[{Box B}]
+      </div>
+      <p class="meta">Click the diagram to edit it, then queue the edit from the panel and press Send to Agent. Reveal the reference only after sending.</p>
+      <button type="button" class="secondary" data-tutor-reveal>Reveal reference</button>
+      <details data-tutor-reference>
+        <summary>Reference figure</summary>
+        <figure>{The reference figure as inline SVG.}</figure>
+      </details>
+    </section>
+    <script src="assets/whiteboard.js" type="module"></script>
+    -->
+  </section>
+
+  <section>
+    <h2>Go further</h2>
+    <div class="primary-source">
+      <span class="kicker">Primary source</span>
+      <a href="{url}">{The most trustworthy resource on this topic}</a>: {why this one, and what part to read or watch.}
+    </div>
+    <ul class="sources">
+      <li><a href="{url}">{Source cited above}</a>: {one line on what it covers.}</li>
+    </ul>
+    <p>Related: <a href="reference/{slug}.html">{Reference document}</a>, <a href="{NNNN-next}.html">{next lesson, when it exists}</a>.</p>
+  </section>
+
+  <p class="ask-reminder">Your tutor is at your side. Select any sentence or figure and ask about it in the side panel, or ask anything in the terminal.</p>
+
+</article>
+<script src="assets/tutor.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+/* course.css: the shared stylesheet for every lesson in this workspace.
+   Copied from the tutor skill on the first lesson; the workspace owns it from then on.
+   Design: a Tufte-like reading column, serif body, sans UI, light and dark, prints well. */
+
+:root {
+  --bg: #fcfcfb;
+  --ink: #1b1b1a;
+  --ink-2: #52514e;
+  --ink-3: #85847e;
+  --rule: #e2e0da;
+  --panel: #f3f2ee;
+  --code: #f0efeb;
+  --accent: #2a6fc9;
+  --accent-ink: #1c55a3;
+  --accent-soft: #e6effa;
+  --ok: #157a2c;
+  --ok-soft: #e4f3e7;
+  --no: #b3312e;
+  --no-soft: #fbeaea;
+  --warn: #9a6b00;
+  --warn-soft: #fff5d6;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a19;
+    --ink: #f1f0eb;
+    --ink-2: #c3c2b7;
+    --ink-3: #8e8d86;
+    --rule: #363532;
+    --panel: #232321;
+    --code: #262624;
+    --accent: #4a8ee6;
+    --accent-ink: #8cbcf2;
+    --accent-soft: #1d2c40;
+    --ok: #5cc25c;
+    --ok-soft: #1d321e;
+    --no: #e66767;
+    --no-soft: #3b2222;
+    --warn: #e0b24a;
+    --warn-soft: #3a3012;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1a1a19;
+  --ink: #f1f0eb;
+  --ink-2: #c3c2b7;
+  --ink-3: #8e8d86;
+  --rule: #363532;
+  --panel: #232321;
+  --code: #262624;
+  --accent: #4a8ee6;
+  --accent-ink: #8cbcf2;
+  --accent-soft: #1d2c40;
+  --ok: #5cc25c;
+  --ok-soft: #1d321e;
+  --no: #e66767;
+  --no-soft: #3b2222;
+  --warn: #e0b24a;
+  --warn-soft: #3a3012;
+  color-scheme: dark;
+}
+
+/* Base */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.6;
+}
+article.lesson { max-width: 44rem; margin: 0 auto; padding: 2.5rem 16px 6rem; }
+
+h1 { font-weight: 400; font-size: 2.1rem; line-height: 1.15; margin: 0.3rem 0 0.4rem; }
+h2 { font-weight: 400; font-size: 1.45rem; margin: 2.4rem 0 0.6rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--rule); }
+h3 { font-family: var(--sans); font-weight: 600; font-size: 1.02rem; margin: 1.5rem 0 0.4rem; }
+p { margin: 0.7rem 0; }
+ul, ol { padding-left: 1.4rem; }
+li { margin: 0.25rem 0; }
+a { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 2rem 0; }
+
+.kicker { font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem; font-weight: 600; color: var(--accent-ink); }
+.lede { font-size: 1.12rem; color: var(--ink-2); }
+.meta { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-3); }
+
+code, kbd, pre { font-family: var(--mono); }
+code { background: var(--code); padding: 0.08em 0.35em; border-radius: 3px; font-size: 0.85em; }
+kbd { border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 0.05em 0.4em; font-size: 0.8em; background: var(--panel); }
+pre { background: var(--code); padding: 0.8rem 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.82rem; line-height: 1.5; }
+pre code { background: none; padding: 0; font-size: inherit; }
+
+/* Figures and tables */
+
+figure { margin: 1.4rem 0; }
+figure svg { display: block; max-width: 100%; height: auto; }
+figcaption { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-2); margin-top: 0.4rem; }
+.fig-ink { fill: var(--ink); }
+.fig-muted { fill: var(--ink-3); }
+.fig-rule { stroke: var(--ink-3); fill: none; }
+.fig-accent { stroke: var(--accent); fill: none; }
+.fig-panel { fill: var(--panel); stroke: var(--rule); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-family: var(--sans); font-size: 0.88rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--rule); }
+th { font-weight: 600; color: var(--ink-2); }
+
+/* Callouts and layout helpers */
+
+.callout { margin: 1rem 0; padding: 0.7rem 1rem; background: var(--panel); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; }
+.callout.warn { background: var(--warn-soft); border-left-color: var(--warn); }
+.callout.ok { background: var(--ok-soft); border-left-color: var(--ok); }
+.two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1rem; }
+.two-col > * { min-width: 0; }
+
+.sources li { margin: 0.35rem 0; }
+.primary-source { margin: 1rem 0; padding: 0.8rem 1rem; background: var(--accent-soft); border-radius: 8px; }
+.primary-source .kicker { display: block; margin-bottom: 0.2rem; }
+.ask-reminder { margin: 2rem 0 0; padding: 0.8rem 1rem; border: 1px dashed var(--rule); border-radius: 8px; font-family: var(--sans); font-size: 0.9rem; color: var(--ink-2); }
+
+/* Buttons and status */
+
+button, .btn {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent-ink);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+button.secondary { background: transparent; color: var(--accent-ink); }
+button:disabled { opacity: 0.5; cursor: default; }
+.status { font-family: var(--sans); font-size: 0.82rem; color: var(--ink-2); margin-left: 0.5rem; }
+.fallback-copy { width: 100%; min-height: 6rem; margin-top: 0.5rem; font-family: var(--mono); font-size: 0.78rem; }
+
+/* Quizzes: closed questions and the warm-up block */
+
+form.quiz fieldset { margin: 1rem 0; padding: 0.8rem 1rem; border: 1px solid var(--rule); border-radius: 8px; }
+form.quiz legend { font-family: var(--sans); font-weight: 600; padding: 0 0.4rem; }
+form.quiz label { display: block; padding: 0.3rem 0.4rem; border-radius: 4px; cursor: pointer; }
+form.quiz label:hover { background: var(--panel); }
+form.quiz input[type="radio"] { margin-right: 0.5rem; }
+form.quiz fieldset[data-state="correct"] { border-color: var(--ok); background: var(--ok-soft); }
+form.quiz fieldset[data-state="incorrect"] { border-color: var(--no); background: var(--no-soft); }
+form.quiz .verdict { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; margin: 0.5rem 0 0; min-height: 1.2em; }
+form.quiz fieldset[data-state="correct"] .verdict { color: var(--ok); }
+form.quiz fieldset[data-state="incorrect"] .verdict { color: var(--no); }
+form.quiz .why { display: none; font-family: var(--sans); font-size: 0.85rem; margin: 0.4rem 0 0; color: var(--ink-2); }
+form.quiz .why.show { display: block; }
+form.quiz .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+
+section.warmup { margin: 1.5rem 0 2rem; padding: 0.2rem 1rem 0.8rem; border: 1px dashed var(--rule); border-radius: 8px; }
+section.warmup h2 { border: 0; margin-top: 1rem; font-size: 1.2rem; }
+
+/* Open questions */
+
+form.open textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.6rem;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+form.open .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+
+/* Whiteboard exercises */
+
+.whiteboard-exercise { margin: 1.5rem 0; }
+.whiteboard-exercise .mermaid { margin: 1rem 0; padding: 0.5rem; border: 1px solid var(--rule); border-radius: 8px; background: var(--panel); }
+.whiteboard-exercise details[data-tutor-reference] { margin-top: 0.8rem; }
+.whiteboard-exercise details[data-tutor-reference] > summary { cursor: pointer; font-family: var(--sans); font-size: 0.9rem; color: var(--accent-ink); }
+
+/* Tutor notes: answers the tutor added during a session, collapsed by default */
+
+details.tutor-note {
+  margin: 0.6rem 0 1rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+}
+details.tutor-note > summary { cursor: pointer; font-family: var(--sans); font-size: 0.85rem; font-weight: 600; color: var(--accent-ink); }
+details.tutor-note > summary::before { content: "Tutor note: "; font-weight: 400; }
+details.tutor-note > :not(summary) { font-size: 0.95rem; }
+
+/* Layout safety, after the Lavish design guidance */
+
+:where(.grid, .flex, .two-col, .actions) > * { min-width: 0; }
+:where(p, h1, h2, h3, h4, li, dd, blockquote, figcaption, td, th, summary) { overflow-wrap: anywhere; }
+:where(img, svg, video, canvas, iframe) { max-width: 100%; height: auto; }
+
+/* Print */
+
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  article.lesson { max-width: none; padding: 0; }
+  button, .status, .ask-reminder, .fallback-copy { display: none !important; }
+  figure, table, fieldset, details.tutor-note, .callout { break-inside: avoid; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #444; }
+  details.tutor-note { background: #f3f3f3; border-color: #999; }
+}

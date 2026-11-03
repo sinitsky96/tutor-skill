@@ -1,0 +1,5 @@
+interface:
+  display_name: "Tutor"
+  short_description: "Learn a topic with a live tutor beside each lesson"
+policy:
+  allow_implicit_invocation: false
