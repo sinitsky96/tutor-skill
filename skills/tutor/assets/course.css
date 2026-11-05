@@ -22,6 +22,11 @@
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --sans: system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
   --mono: ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+  /* Raster plates and photos are "paper": light card in both themes. Drawn-on-plate ink uses these fixed values. */
+  --paper: #fcfcfb;
+  --paper-ink: #1b1b1a;
+  --paper-halo: #ffffff;
+  --plate-filter: none;
   color-scheme: light;
 }
 
@@ -43,6 +48,9 @@
     --no-soft: #3b2222;
     --warn: #e0b24a;
     --warn-soft: #3a3012;
+    --paper: #e8e5dc;
+    --paper-halo: #f4f1e8;
+    --plate-filter: brightness(0.88) contrast(1.02);
     color-scheme: dark;
   }
 }
@@ -64,6 +72,9 @@
   --no-soft: #3b2222;
   --warn: #e0b24a;
   --warn-soft: #3a3012;
+  --paper: #e8e5dc;
+  --paper-halo: #f4f1e8;
+  --plate-filter: brightness(0.88) contrast(1.02);
   color-scheme: dark;
 }
 
@@ -105,6 +116,7 @@ pre code { background: none; padding: 0; font-size: inherit; }
 figure { margin: 1.4rem 0; }
 figure svg { display: block; max-width: 100%; height: auto; }
 figcaption { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-2); margin-top: 0.4rem; }
+.fig-photo img { display: block; width: 100%; height: auto; border-radius: 6px; background: var(--paper); filter: var(--plate-filter); border: 1px solid var(--rule); }
 .fig-ink { fill: var(--ink); }
 .fig-muted { fill: var(--ink-3); }
 .fig-rule { stroke: var(--ink-3); fill: none; }

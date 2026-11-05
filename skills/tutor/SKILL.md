@@ -112,11 +112,12 @@ The listener returns when the user sends feedback. Read the whole response befor
 
 When the user presses Send and End, or says "done" in the terminal:
 
-1. **Learning records**, only where there is evidence: quiz and warm-up results, graded open answers, a drawing, or a question that presupposes understanding. Each record cites its evidence.
-2. **Glossary**: promote the terms the user used correctly in their own words. Never terms that were merely covered.
-3. **Reference documents**: write or update the compressed essence of the lesson in `lessons/reference/`.
-4. **`NOTES.md`**: preferences the user voiced, the candidate for the next lesson and why it fits, topics re-promoted by misses.
-5. **Close**: `npx -y lavish-axi end <lesson>` if the browser did not end the session. Do not restart the listener.
+1. **`SESSION-LOG.md`**: append to the workspace file (create if missing) with: date, lesson, what the learner corrected or asked to change, what fell flat, what worked, and quoted words where they matter.
+2. **Learning records**, only where there is evidence: quiz and warm-up results, graded open answers, a drawing, or a question that presupposes understanding. Each record cites its evidence.
+3. **Glossary**: promote the terms the user used correctly in their own words. Never terms that were merely covered.
+4. **Reference documents**: write or update the compressed essence of the lesson in `lessons/reference/`.
+5. **`NOTES.md`**: preferences the user voiced, the candidate for the next lesson and why it fits, topics re-promoted by misses.
+6. **Close**: `npx -y lavish-axi end <lesson>` if the browser did not end the session. Do not restart the listener.
 
 One lesson is open at a time. Before opening another, run this ritual on the current one.
 
@@ -129,6 +130,8 @@ If `npx` or node is missing, or `lavish-axi` fails to start: say so in one line,
 A lesson is the main thing you produce: one self-contained HTML file in `lessons/`, numbered `0001-<slug>.html` and up. It teaches one tightly scoped thing tied to the mission, in the user's zone of proximal development, and gives them a single tangible win. Short, completable quickly: working memory is small.
 
 A lesson is **beautiful**, with clean, readable typography and layout, because the user returns to it. Think Tufte. Figures are hand-authored inline SVG per the diagram playbook; a Mermaid whiteboard appears only as an exercise.
+
+For every idea in Knowledge: an ELI5 plain line first, then the technical version; define every term on first use; a figure for that idea; animation when the idea is motion or process. Before calling the lesson done, verify every figure in light and dark. Raster plates and photos use the paper colour rule in `course.css`; overlays and labels must fit the shape (no spilled ovals or rects; chip labels with short leaders). Keep the build tight so the lesson opens quickly.
 
 Every lesson contains, in this order:
 
@@ -149,7 +152,7 @@ Lessons are built from reusable components in `lessons/assets/`. Reuse is the de
 
 On the first lesson, copy the templates from this skill's [assets](./assets/) folder into the workspace:
 
-- `course.css`: typography, light and dark themes, figures, tables, callouts, quiz, Tutor note, warm-up and print rules.
+- `course.css`: typography, light and dark themes, figures, tables, callouts, quiz, Tutor note, warm-up and print rules. Includes `--paper`, `--paper-ink`, `--paper-halo`, and `--plate-filter` for raster plates and photos (light paper card in both themes).
 - `tutor.js`: quiz grading and the results batch, open-question submit, whiteboard reveal, and clipboard fallbacks when Lavish is absent.
 
 `whiteboard.js` is not shipped. The first time a workspace needs a whiteboard, run `npx -y lavish-axi design` and write its current Mermaid snippet to `lessons/assets/whiteboard.js`.
