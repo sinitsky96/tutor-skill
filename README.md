@@ -4,6 +4,8 @@ Learn a topic over many sessions with an agent as a live tutor beside each lesso
 
 `tutor` is the [teach](https://github.com/mattpocock/skills/tree/main/skills/productivity/teach) skill by Matt Pocock with a live loop on top, delivered through [Lavish Editor](https://github.com/kunchenguid/lavish-axi) by Kun Chen. Teach supplies the pedagogy: a mission, trusted resources, short interactive lessons, learning records, a glossary. Lavish supplies the browser surface: each lesson opens as a page where you select any sentence or figure and ask about it, and the agent answers while you read.
 
+Lessons teach with pictures, not only prose. Every idea gets a figure picked by the question it answers. Processes are steppers you click through one change at a time. You predict before each reveal, drag a slider where a parameter drives an outcome, and practise on the figures themselves: point at the part, name the parts, spot the error. Continuous math motion can be a rendered [Manim](https://www.manim.community/) clip that pauses at each step. The rules and their sources are in [skills/tutor/VISUALS.md](skills/tutor/VISUALS.md).
+
 ```
 you                                   the tutor (your agent)
  |  /tutor <topic>                       |
@@ -23,6 +25,7 @@ you                                   the tutor (your agent)
 - An agent harness that runs skills, such as Claude Code or Codex.
 - Node 18 or newer, for `npx -y lavish-axi`. Nothing is installed globally.
 - A browser.
+- Optional: [Manim Community Edition](https://docs.manim.community/) for rendered clips (`conda install -c conda-forge manim`). Without it, lessons use steppers instead.
 
 ## Install
 
@@ -58,8 +61,10 @@ GLOSSARY.md           the words this workspace uses
 NOTES.md              the tutor's notes on your preferences and the next lesson
 learning-records/     what you have demonstrably learned
 qa/                   every question you asked, per lesson
+clips/                Manim source for rendered clips, when a lesson has one
 lessons/              the lessons, the only tree a browser opens
-  assets/             course.css, tutor.js, whiteboard.js
+  assets/             course.css, tutor.js, visuals.css, visuals.js, whiteboard.js
+  media/              rendered clips and their final frames
   reference/          cheat sheets and printable reference pages
 ```
 
@@ -67,4 +72,4 @@ Everything stays on your machine. The skill never runs Lavish's `share` command;
 
 ## Credits and license
 
-MIT. Builds on teach (MIT) and lavish-axi (MIT). What is vendored, what differs and how to track upstream changes is in [skills/tutor/UPSTREAM.md](skills/tutor/UPSTREAM.md).
+MIT. Builds on teach (MIT) and lavish-axi (MIT); the visual-teaching rules borrow ideas from visual-explainer and manim_skill (both MIT). What is vendored, what differs and how to track upstream changes is in [skills/tutor/UPSTREAM.md](skills/tutor/UPSTREAM.md).

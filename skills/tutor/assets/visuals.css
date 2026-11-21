@@ -1,0 +1,182 @@
+/* visuals.css: figure components for every lesson in this workspace.
+   tutor-assets: 2
+   Copied from the tutor skill on the first lesson; the workspace owns it from then on.
+   Load after course.css, whose tokens it uses. When to use each piece: VISUALS.md in the tutor skill.
+   Markup contracts: the header of visuals.js. */
+
+/* Concept colours: one slot per concept, kept for the whole course (mapping in NOTES.md).
+   Validated as a categorical palette, all pairs, light on #fcfcfb and dark on #1a1a19: lightness band, chroma,
+   colour-blind separation and normal-vision separation pass. Light --c3 is 2.7:1 on the page, so every
+   coloured mark carries a direct label. Text never takes these colours; .ref underlines carry them. */
+
+:root {
+  --c1: #2a78d6;
+  --c2: #eb6834;
+  --c3: #1baf7a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c1: #3987e5;
+    --c2: #d95926;
+    --c3: #199e70;
+  }
+}
+
+:root[data-theme="dark"] {
+  --c1: #3987e5;
+  --c2: #d95926;
+  --c3: #199e70;
+}
+
+/* SVG vocabulary. Text classes set font and fill; size stays in the SVG's own units. */
+
+.fig-text { font-family: var(--sans); font-size: 14px; fill: var(--ink); }
+.fig-text.small { font-size: 12px; }
+.fig-text.muted { fill: var(--ink-2); }
+.fig-text.mono { font-family: var(--mono); }
+.fig-text.middle { text-anchor: middle; }
+.fig-text.end { text-anchor: end; }
+.fig-line { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
+.fig-ctx { stroke: var(--ink-3); fill: none; }
+.fig-ctx-fill { fill: var(--rule); }
+.fig-chip { fill: var(--bg); stroke: var(--rule); }
+.fig-c1 { fill: var(--c1); }
+.fig-c2 { fill: var(--c2); }
+.fig-c3 { fill: var(--c3); }
+.fig-c1-line { stroke: var(--c1); stroke-width: 2; fill: none; }
+.fig-c2-line { stroke: var(--c2); stroke-width: 2; fill: none; }
+.fig-c3-line { stroke: var(--c3); stroke-width: 2; fill: none; }
+.fig-c1-soft { fill: color-mix(in srgb, var(--c1) 18%, var(--bg)); stroke: var(--c1); }
+.fig-c2-soft { fill: color-mix(in srgb, var(--c2) 18%, var(--bg)); stroke: var(--c2); }
+.fig-c3-soft { fill: color-mix(in srgb, var(--c3) 18%, var(--bg)); stroke: var(--c3); }
+.fig-ok { fill: var(--ok); }
+.fig-no { fill: var(--no); }
+.fig-ok-line { stroke: var(--ok); stroke-width: 2; fill: none; }
+.fig-no-line { stroke: var(--no); stroke-width: 2; fill: none; }
+
+/* Lettered markers for point-at-it questions: <g class="fig-marker"><circle cx cy r="15"/><text x y>A</text></g>.
+   Size them for the figure's rendered width: at least 12 px on screen. */
+.fig-marker circle { fill: var(--bg); stroke: var(--ink); stroke-width: 1.5; }
+.fig-marker text { font-family: var(--sans); font-size: 14px; font-weight: 700; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+
+/* Figure sizes */
+
+figure.wide { width: min(64rem, calc(100vw - 32px)); margin-left: 50%; transform: translateX(-50%); }
+figure.mini { max-width: 28rem; }
+
+/* Linked terms: a term in prose and the figure parts it names light up together */
+
+.ref {
+  text-decoration-line: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--ink-3);
+  border-radius: 3px;
+}
+.ref[data-tutor-ref] { cursor: help; }
+.ref.c1 { text-decoration-color: var(--c1); }
+.ref.c2 { text-decoration-color: var(--c2); }
+.ref.c3 { text-decoration-color: var(--c3); }
+.ref.is-linked { background: var(--panel); }
+.ref:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+svg .is-linked { filter: drop-shadow(0 0 2px var(--ink)) drop-shadow(0 0 1px var(--ink)); }
+
+/* Stepper: learner-paced, one change per step. visuals.js adds .is-ready and builds the bar.
+   Without JS, every part shows and every caption is listed. */
+
+.stepper { margin: 1.4rem 0; }
+.stepper:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 8px; }
+.stepper > figure { margin: 0; }
+.stepper [data-step] { transition: opacity 0.35s ease; }
+.stepper.is-ready [data-step].is-future,
+.stepper.is-ready [data-step].is-gone { opacity: 0; pointer-events: none; }
+.stepper.is-ready:not([data-focus="off"]):not(.at-last) [data-step].is-past { opacity: 0.5; }
+
+.stepper-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0 0.3rem; font-family: var(--sans); }
+.stepper-bar button { padding: 0.3rem 0.75rem; font-size: 0.85rem; }
+.stepper-dots { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; margin: 0 0.3rem; }
+.stepper-dots button { width: 0.85rem; height: 0.85rem; padding: 0; border: 0; border-radius: 50%; background: var(--rule); }
+.stepper-dots button[aria-current="step"] { background: var(--accent); }
+.stepper-label { font-size: 0.88rem; font-weight: 600; color: var(--ink-2); }
+
+.stepper-steps { margin: 0.4rem 0 0; padding-left: 1.4rem; font-family: var(--sans); font-size: 0.92rem; line-height: 1.5; }
+.stepper-steps > li { margin: 0.3rem 0; }
+.stepper.is-ready .stepper-steps { list-style: none; padding: 0.6rem 0.9rem; min-height: 4.5rem; background: var(--panel); border-radius: 8px; }
+.stepper.is-ready .stepper-steps > li { display: none; margin: 0; }
+.stepper.is-ready .stepper-steps > li.is-current { display: block; }
+
+/* Explorable: a parameter bound to the figure */
+
+.explore { margin: 1.4rem 0; }
+.explore > figure { margin: 0; }
+.explore-controls { display: grid; gap: 0.5rem; margin-top: 0.6rem; padding: 0.6rem 0.9rem; background: var(--panel); border-radius: 8px; font-family: var(--sans); font-size: 0.88rem; }
+.explore-controls label { display: grid; grid-template-columns: minmax(5rem, max-content) minmax(0, 1fr) 4.5rem; align-items: center; gap: 0.6rem; }
+.explore-controls input[type="range"] { width: 100%; accent-color: var(--accent); }
+.explore-controls output { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+/* Side by side and small multiples */
+
+.compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; margin: 1.4rem 0; }
+.compare > figure { margin: 0; min-width: 0; padding-top: 0.5rem; border-top: 3px solid var(--rule); }
+.compare > figure[data-verdict="right"] { border-top-color: var(--ok); }
+.compare > figure[data-verdict="wrong"] { border-top-color: var(--no); }
+.compare > figure > .kicker { display: block; margin-bottom: 0.3rem; color: var(--ink-2); }
+.compare > figure[data-verdict="right"] > .kicker { color: var(--ok); }
+.compare > figure[data-verdict="wrong"] > .kicker { color: var(--no); }
+
+.multiples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 0.6rem; margin: 1.4rem 0; }
+.multiples > figure { margin: 0; min-width: 0; }
+.multiples > figure > figcaption { text-align: center; }
+
+/* Autoplay build: a short cue where the motion is the idea. visuals.js holds it until it is on screen.
+     .step   appears in order of --i (opacity only: a CSS transform would override an SVG transform attribute)
+     .draw   a stroke that draws itself; needs pathLength="1" on the path
+     .flow   a dashed stroke that runs along a path for a few cycles, then stops
+     .pulse  a brief emphasis on the part that matters now
+   Keep .step and .draw/.flow/.pulse on different elements: each sets the animation property. */
+
+figure.anim .step { opacity: 0; animation: tutor-step 0.5s ease-out forwards; animation-delay: calc(var(--i, 0) * 0.8s); }
+figure.anim .draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: tutor-draw 0.9s ease-out forwards; animation-delay: calc(var(--i, 0) * 0.8s); }
+figure.anim .flow { stroke-dasharray: 6 6; animation: tutor-flow 1.2s linear 4; }
+figure.anim .pulse { animation: tutor-pulse 1.6s ease-in-out 3; animation-delay: calc(var(--i, 0) * 0.8s); }
+html.tutor-visuals figure.anim:not(.in-view) * { animation-play-state: paused !important; }
+@keyframes tutor-step { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tutor-draw { to { stroke-dashoffset: 0; } }
+@keyframes tutor-flow { to { stroke-dashoffset: -24; } }
+@keyframes tutor-pulse { 50% { opacity: 0.45; } }
+figure.anim figcaption { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
+button.replay { font-size: 0.75rem; padding: 0.15rem 0.6rem; }
+
+/* Rendered clips: a dark plate in both themes, paused at step boundaries by visuals.js */
+
+figure.clip video { display: block; width: 100%; height: auto; border-radius: 6px; background: #1a1a19; border: 1px solid var(--rule); }
+figure.clip .clip-print { display: none; }
+.clip-steps { margin: 0.5rem 0 0; padding-left: 1.4rem; font-family: var(--sans); font-size: 0.9rem; color: var(--ink-2); }
+.clip-steps > li.is-current { color: var(--ink); font-weight: 600; }
+.clip-note { min-height: 1.2em; margin: 0.3rem 0 0; font-family: var(--sans); font-size: 0.85rem; color: var(--accent-ink); }
+
+/* Reduced motion: every figure shows its final frame at once */
+
+@media (prefers-reduced-motion: reduce) {
+  .stepper [data-step] { transition: none; }
+  figure.anim * { animation: none !important; }
+  figure.anim .step { opacity: 1; }
+  figure.anim .draw { stroke-dasharray: none; stroke-dashoffset: 0; }
+  button.replay { display: none; }
+}
+
+/* Print: final frames, every caption, no controls */
+
+@media print {
+  .stepper-bar, button.replay, .explore-controls input, .clip-note { display: none !important; }
+  .stepper.is-ready .stepper-steps { list-style: decimal; padding: 0 0 0 1.4rem; background: none; }
+  .stepper.is-ready .stepper-steps > li { display: list-item; margin: 0.2rem 0; }
+  figure.anim * { animation: none !important; }
+  figure.anim .step { opacity: 1 !important; }
+  figure.anim .draw { stroke-dasharray: none; stroke-dashoffset: 0; }
+  figure.wide { width: auto; margin-left: 0; transform: none; }
+  figure.clip video { display: none; }
+  figure.clip .clip-print { display: block; width: 100%; height: auto; }
+  .stepper, .explore, .compare, .multiples, figure.clip { break-inside: avoid; }
+}

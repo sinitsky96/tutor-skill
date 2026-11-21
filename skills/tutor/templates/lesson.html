@@ -5,11 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{Lesson title}</title>
 <link rel="stylesheet" href="assets/course.css">
+<link rel="stylesheet" href="assets/visuals.css">
 <!--
   Template for a tutor lesson. Replace every {placeholder}. Keep the order of sections.
   Rules that live in SKILL.md: one tightly scoped win, short, cited, both a warm-up and skills
   practice, equal-length quiz options with the correct position varied, no prompt queued per click.
+  Rules for figures live in VISUALS.md: pick each figure by the question its section answers,
+  one concrete case before the rule, the learner steps through, predict before reveal.
   Lavish serves only this directory and below, so every link is relative and inside lessons/.
+  Concept colours used here (keep the mapping in NOTES.md): c1 = {concept}, c2 = {concept}.
 -->
 <!-- Revisions registry: add one entry per round of Tutor notes, oldest first. Remove this block on a first draft.
 <script type="application/json" data-lavish-revisions>
@@ -28,6 +32,7 @@
   </header>
 
   <!-- Warm-up: two or three retrieval questions from earlier learning records and glossary terms.
+       An earlier figure with its labels swapped for lettered markers makes a good warm-up question.
        Skip this block only in the first lesson. -->
   <section class="warmup">
     <h2>Before we start</h2>
@@ -55,28 +60,136 @@
     </form>
   </section>
 
-  <!-- Knowledge: only what the skill of this lesson requires. Cite every claim. -->
+  <!-- Knowledge: only what the skill of this lesson requires. Cite every claim.
+       The heading names the question the section answers; VISUALS.md picks the figure from it. -->
   <section>
-    <h2>{Knowledge heading}</h2>
-    <p>{The idea, in plain words. Link claims to sources: <a href="{url}">{source name}</a>.}</p>
+    <h2>{Knowledge heading: the question this section answers}</h2>
+    <p>{The idea in plain words, one concrete case. Name the parts with linked terms, such as
+      <span class="ref c1" data-tutor-ref="f1-a">{part A}</span> and
+      <span class="ref c2" data-tutor-ref="f1-b">{part B}</span>, so hovering lights up the figure.
+      Link claims to sources: <a href="{url}">{source name}</a>.}</p>
 
-    <figure>
-      <svg viewBox="0 0 640 220" role="img" aria-labelledby="fig1-title">
-        <title id="fig1-title">{What the figure shows}</title>
-        <!-- Hand-authored inline SVG per the Lavish diagram playbook. Use the .fig-* classes so it follows the theme. -->
-        <rect class="fig-panel" x="20" y="40" width="180" height="70" rx="8"></rect>
-        <text class="fig-ink" x="110" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16">{Box A}</text>
-        <path class="fig-accent" d="M200 75 H 300" stroke-width="2" marker-end="url(#arrow)"></path>
-        <rect class="fig-panel" x="300" y="40" width="180" height="70" rx="8"></rect>
-        <text class="fig-ink" x="390" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16">{Box B}</text>
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
-          </marker>
-        </defs>
+    <!-- A process or a worked example: a stepper. One change per step, every intermediate state shown.
+         Parts without data-step are context. data-step="2" appears at step 2 and stays; "2-3" shows at 2 and 3 only.
+         Labels sit on the figure in ink; concept colours go on marks, never on text. -->
+    <div class="stepper" id="f1" data-tutor-stepper>
+      <figure>
+        <svg viewBox="0 0 640 150" role="img" aria-labelledby="f1-title">
+          <title id="f1-title">{What the figure shows}</title>
+          <defs>
+            <marker id="f1-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+          <g id="f1-a" data-step="1">
+            <title>{Part A}</title>
+            <rect class="fig-c1-soft" x="30" y="40" width="180" height="70" rx="8"></rect>
+            <text class="fig-text middle" x="120" y="80">{Part A}</text>
+          </g>
+          <g id="f1-flow" data-step="2" style="color: var(--ink-2)">
+            <title>{What moves from A to B}</title>
+            <path class="fig-line" d="M214 75 H 422" marker-end="url(#f1-arrow)"></path>
+            <text class="fig-text small muted middle" x="318" y="64">{what moves}</text>
+          </g>
+          <g id="f1-b" data-step="3">
+            <title>{Part B}</title>
+            <rect class="fig-c2-soft" x="430" y="40" width="180" height="70" rx="8"></rect>
+            <text class="fig-text middle" x="520" y="80">{Part B}</text>
+          </g>
+        </svg>
+        <figcaption>{Figure 1. The claim the figure shows, not its topic.}</figcaption>
+      </figure>
+      <ol class="stepper-steps">
+        <li><strong>{Step 1 title}.</strong> {What appears and why, in one or two sentences.}</li>
+        <li><strong>{Step 2 title}.</strong> {The one change in this step.}</li>
+        <li><strong>{Step 3 title}.</strong> {The one change in this step, and the full picture it completes.}</li>
+      </ol>
+    </div>
+
+    <!-- Predict before reveal: ask before the figure, explorable or result that answers the question. -->
+    <form class="predict" data-tutor-predict data-q="p1" data-answer="{b}" data-lavish-question="predict-p1">
+      <span class="kicker">Predict first</span>
+      <p class="question">{What happens to B when A doubles?}</p>
+      <div class="choices">
+        <label><input type="radio" name="p1" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="p1" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="p1" value="c"> {option, same length as the others}</label>
+      </div>
+      <fieldset class="confidence">
+        <legend>How sure are you?</legend>
+        <label><input type="radio" name="p1-sure" value="50"> 50%</label>
+        <label><input type="radio" name="p1-sure" value="70"> 70%</label>
+        <label><input type="radio" name="p1-sure" value="90"> 90%</label>
+      </fieldset>
+      <p class="verdict"></p>
+      <div class="actions">
+        <button type="submit">Lock it in</button>
+        <span class="status"></span>
+      </div>
+    </form>
+    <div class="reveal" data-reveal-for="p1" hidden>
+      <span class="kicker">What happens</span>
+      <p>{The answer in one or two sentences, with the figure or explorable that shows it.}</p>
+
+      <!-- Explorable: only when a parameter drives an outcome. Each named input sets --name on the root and fills
+           the output element with data-out="name"; a "tutor:explore" event carries every value for drawing code.
+      <div class="explore" id="e1" data-tutor-explore>
+        <figure>
+          <svg viewBox="0 0 640 160" role="img" aria-labelledby="e1-title">
+            <title id="e1-title">{What the explorable shows}</title>
+            <rect id="e1-bar" class="fig-c1" x="40" y="60" height="40" width="200"></rect>
+          </svg>
+          <figcaption>{Figure 2. What to watch as the value changes.}</figcaption>
+        </figure>
+        <div class="explore-controls">
+          <label>{Parameter} <input type="range" name="k" min="0" max="2" step="0.1" value="1" list="e1-marks">
+            <output data-out="k" data-digits="1"></output></label>
+          <datalist id="e1-marks"><option value="1"></option></datalist>
+        </div>
+      </div>
+      <script>
+        document.getElementById("e1").addEventListener("tutor:explore", function (e) {
+          document.getElementById("e1-bar").setAttribute("width", String(200 * e.detail.values.k));
+        });
+      </script>
+      -->
+    </div>
+
+    <!-- Two things to tell apart, or a common mistake: side by side, same scale, the difference marked.
+    <div class="compare">
+      <figure data-verdict="wrong"><span class="kicker">Wrong: {name the mistake}</span>{inline SVG}<figcaption>{What is wrong, in one line.}</figcaption></figure>
+      <figure data-verdict="right"><span class="kicker">Right</span>{inline SVG}<figcaption>{What fixes it, in one line.}</figcaption></figure>
+    </div>
+    -->
+
+    <!-- A short build where the motion is the idea: autoplay, held until on screen, with Replay.
+         .step appears in order of --i; .draw needs pathLength="1"; .flow and .pulse stop after a few cycles.
+    <figure class="anim">
+      <svg viewBox="0 0 640 120" role="img" aria-labelledby="f3-title">
+        <title id="f3-title">{What the build shows}</title>
+        <g class="step" style="--i: 0">{first part}</g>
+        <path class="fig-line draw" pathLength="1" d="M120 60 H 520" style="--i: 1"></path>
+        <g class="step" style="--i: 2">{last part}</g>
       </svg>
-      <figcaption>{Figure 1. One sentence that says what to look at.}</figcaption>
+      <figcaption>{Figure 3. The claim.} <button type="button" class="secondary replay" data-tutor-replay>Replay</button></figcaption>
     </figure>
+    -->
+
+    <!-- A rendered Manim clip: only for continuous motion a stepper cannot carry (VISUALS.md, Rendered Clips).
+         data-pauses = step boundaries in seconds; one .clip-steps item per segment.
+    <figure class="clip">
+      <video data-tutor-clip data-pauses="{3.5 8}" src="media/{NNNN-name}.mp4" poster="media/{NNNN-name}.png"
+             controls muted playsinline preload="metadata"></video>
+      <img class="clip-print" src="media/{NNNN-name}.png" alt="{Final frame: what it shows}">
+      <ol class="clip-steps">
+        <li>{Segment before the first pause.}</li>
+        <li>{Next segment.}</li>
+        <li>{Last segment.}</li>
+      </ol>
+      <p class="clip-note" aria-live="polite"></p>
+      <figcaption>{Figure 4. The claim.}</figcaption>
+    </figure>
+    -->
 
     <div class="callout">{The one thing to remember from this section.}</div>
 
@@ -91,6 +204,7 @@
     </div>
 
     <!-- A Tutor note looks like this. Only the tutor adds them, during a session, directly under the element the user asked about.
+         A question about a figure or about how or why gets a figure in the note: the same figure, the part isolated or a step added.
     <details class="tutor-note" data-lavish-revision="r1">
       <summary>{One-line summary of the question}</summary>
       <p>{The answer worth keeping: a figure, a table, a worked example, a corrected misconception.}</p>
@@ -98,7 +212,8 @@
     -->
   </section>
 
-  <!-- Skills: closed questions with instant feedback, one submission; at least one open question. -->
+  <!-- Skills: closed questions with instant feedback, one submission; at least one open question;
+       at least one visual exercise when the lesson has a figure (VISUALS.md, Visual Practice). -->
   <section>
     <h2>Practice</h2>
     <form class="quiz" data-tutor-quiz="quiz" data-lavish-question="quiz">
@@ -110,14 +225,38 @@
         <p class="verdict"></p>
         <p class="why">{Why the right answer is right, in one sentence.}</p>
       </fieldset>
+      <!-- Point at it: the lesson figure with lettered markers, the letters as options. -->
       <fieldset data-q="q2" data-answer="{a}">
-        <legend>{Second question, a different angle on the same idea}</legend>
-        <label><input type="radio" name="q2" value="a"> {option, same length as the others}</label>
-        <label><input type="radio" name="q2" value="b"> {option, same length as the others}</label>
-        <label><input type="radio" name="q2" value="c"> {option, same length as the others}</label>
+        <legend>{Point at it: which marked part does X?}</legend>
+        <figure>
+          <svg viewBox="0 0 640 140" role="img" aria-labelledby="q2-title">
+            <title id="q2-title">{The lesson figure with lettered markers instead of labels}</title>
+            <rect class="fig-c1-soft" x="30" y="40" width="180" height="70" rx="8"></rect>
+            <path class="fig-line" d="M214 75 H 422"></path>
+            <rect class="fig-c2-soft" x="430" y="40" width="180" height="70" rx="8"></rect>
+            <g class="fig-marker"><circle cx="120" cy="75" r="15"></circle><text x="120" y="75">A</text></g>
+            <g class="fig-marker"><circle cx="318" cy="75" r="15"></circle><text x="318" y="75">B</text></g>
+            <g class="fig-marker"><circle cx="520" cy="75" r="15"></circle><text x="520" y="75">C</text></g>
+          </svg>
+        </figure>
+        <label><input type="radio" name="q2" value="a"> A</label>
+        <label><input type="radio" name="q2" value="b"> B</label>
+        <label><input type="radio" name="q2" value="c"> C</label>
         <p class="verdict"></p>
         <p class="why">{Why the right answer is right, in one sentence.}</p>
       </fieldset>
+      <!-- Pick the matching picture: same size, style and detail for every option.
+      <fieldset data-q="q3" data-answer="{b}">
+        <legend>{Which picture shows X?}</legend>
+        <div class="pick">
+          <label><input type="radio" name="q3" value="a"><svg viewBox="0 0 160 100" role="img" aria-label="{Option A}">...</svg><span>A</span></label>
+          <label><input type="radio" name="q3" value="b"><svg viewBox="0 0 160 100" role="img" aria-label="{Option B}">...</svg><span>B</span></label>
+          <label><input type="radio" name="q3" value="c"><svg viewBox="0 0 160 100" role="img" aria-label="{Option C}">...</svg><span>C</span></label>
+        </div>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      -->
       <div class="actions">
         <button type="submit">Submit results</button>
         <span class="status"></span>
@@ -172,5 +311,6 @@ flowchart LR
 
 </article>
 <script src="assets/tutor.js"></script>
+<script src="assets/visuals.js"></script>
 </body>
 </html>
