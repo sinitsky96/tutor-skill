@@ -1,5 +1,7 @@
 /* course.css: the shared stylesheet for every lesson in this workspace.
+   tutor-assets: 2
    Copied from the tutor skill on the first lesson; the workspace owns it from then on.
+   Figure components (concept colours, stepper, explorable, autoplay, clips) live in visuals.css.
    Design: a Tufte-like reading column, serif body, sans UI, light and dark, prints well. */
 
 :root {
@@ -81,9 +83,10 @@ body {
 }
 article.lesson { max-width: 44rem; margin: 0 auto; padding: 2.5rem 16px 6rem; }
 
-h1 { font-weight: 400; font-size: 2.1rem; line-height: 1.15; margin: 0.3rem 0 0.4rem; }
-h2 { font-weight: 400; font-size: 1.45rem; margin: 2.4rem 0 0.6rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--rule); }
-h3 { font-family: var(--sans); font-weight: 600; font-size: 1.02rem; margin: 1.5rem 0 0.4rem; }
+/* Type scale: body 18px; each heading step at least 1.25x the one below (h3 22.7px, h2 28.8px, h1 38.4px). */
+h1 { font-weight: 400; font-size: 2.4rem; line-height: 1.12; margin: 0.3rem 0 0.4rem; }
+h2 { font-weight: 400; font-size: 1.8rem; line-height: 1.2; margin: 2.4rem 0 0.6rem; padding-bottom: 0.25rem; border-bottom: 1px solid var(--rule); }
+h3 { font-family: var(--sans); font-weight: 600; font-size: 1.42rem; line-height: 1.25; margin: 1.6rem 0 0.4rem; }
 p { margin: 0.7rem 0; }
 ul, ol { padding-left: 1.4rem; }
 li { margin: 0.25rem 0; }
@@ -161,9 +164,18 @@ form.quiz fieldset[data-state="incorrect"] .verdict { color: var(--no); }
 form.quiz .why { display: none; font-family: var(--sans); font-size: 0.85rem; margin: 0.4rem 0 0; color: var(--ink-2); }
 form.quiz .why.show { display: block; }
 form.quiz .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+form.quiz fieldset > figure { margin: 0.4rem 0 0.6rem; }
+
+/* Picture options: <div class="pick"><label><input type="radio" ...><svg>...</svg><span>Label</span></label> ...</div>.
+   Every picture the same size, style and detail. */
+form.quiz .pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr)); gap: 0.6rem; margin: 0.4rem 0; }
+form.quiz .pick label { display: grid; justify-items: center; gap: 0.3rem; padding: 0.5rem; border: 1px solid var(--rule); border-radius: 8px; text-align: center; font-family: var(--sans); font-size: 0.85rem; }
+form.quiz .pick label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+form.quiz .pick input[type="radio"] { margin: 0; }
+form.quiz .pick svg { width: 100%; height: auto; }
 
 section.warmup { margin: 1.5rem 0 2rem; padding: 0.2rem 1rem 0.8rem; border: 1px dashed var(--rule); border-radius: 8px; }
-section.warmup h2 { border: 0; margin-top: 1rem; font-size: 1.2rem; }
+section.warmup h2 { border: 0; margin-top: 1rem; font-size: 1.42rem; }
 
 /* Open questions */
 
@@ -180,6 +192,46 @@ form.open textarea {
   border-radius: 6px;
 }
 form.open .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+
+/* Predictions and their reveals: commit first, then see what happens */
+
+form.predict {
+  margin: 1.4rem 0 0.6rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent-soft);
+}
+form.predict .kicker { display: block; margin-bottom: 0.2rem; }
+form.predict .question { font-family: var(--sans); font-weight: 600; margin: 0.2rem 0 0.5rem; }
+form.predict .choices label, form.predict .confidence label { display: block; padding: 0.25rem 0.4rem; border-radius: 4px; cursor: pointer; font-family: var(--sans); font-size: 0.92rem; }
+form.predict .choices label:hover, form.predict .confidence label:hover { background: var(--bg); }
+form.predict input[type="radio"] { margin-right: 0.5rem; }
+form.predict textarea {
+  width: 100%;
+  min-height: 3.5rem;
+  margin-top: 0.4rem;
+  padding: 0.5rem;
+  font-family: var(--serif);
+  font-size: 0.98rem;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+form.predict .confidence { margin: 0.6rem 0 0; padding: 0.3rem 0.6rem 0.4rem; border: 1px solid var(--rule); border-radius: 6px; }
+form.predict .confidence legend { font-family: var(--sans); font-size: 0.82rem; font-weight: 600; padding: 0 0.3rem; }
+form.predict .confidence label { display: inline-block; margin-right: 0.6rem; }
+form.predict .verdict { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; margin: 0.5rem 0 0; min-height: 1.2em; }
+form.predict .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+form.predict[data-state="hit"] { border-color: var(--ok); background: var(--ok-soft); }
+form.predict[data-state="hit"] .verdict { color: var(--ok); }
+form.predict[data-state="miss"] { border-color: var(--no); background: var(--no-soft); }
+form.predict[data-state="miss"] .verdict { color: var(--no); }
+
+.reveal[hidden] { display: none !important; }
+.reveal { margin: 0.6rem 0 1.4rem; padding: 0.2rem 1rem 0.6rem; border: 1px solid var(--rule); border-radius: 8px; }
+.reveal > .kicker { display: block; margin-top: 0.4rem; }
 
 /* Whiteboard exercises */
 
@@ -213,7 +265,7 @@ details.tutor-note > :not(summary) { font-size: 0.95rem; }
   body { background: #fff; color: #000; font-size: 11pt; }
   article.lesson { max-width: none; padding: 0; }
   button, .status, .ask-reminder, .fallback-copy { display: none !important; }
-  figure, table, fieldset, details.tutor-note, .callout { break-inside: avoid; }
+  figure, table, fieldset, details.tutor-note, .callout, form.predict { break-inside: avoid; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #444; }
   details.tutor-note { background: #f3f3f3; border-color: #999; }
 }

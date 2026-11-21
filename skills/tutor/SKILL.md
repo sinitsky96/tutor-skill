@@ -1,6 +1,6 @@
 ---
 name: tutor
-description: Teach the user a topic over many sessions as a live tutor. Each lesson is an interactive HTML page opened in Lavish Editor, where the user selects any part and asks about it, takes graded quizzes, answers open questions, or draws on a whiteboard. Builds on the teach skill and the lavish-axi CLI. Use when the user wants to learn something with a tutor at their side.
+description: Teach the user a topic over many sessions as a live tutor. Each lesson is an interactive HTML page opened in Lavish Editor, built on figures the user steps through, predicts and explores, where the user selects any part and asks about it, takes graded quizzes, answers open questions, or draws on a whiteboard. Builds on the teach skill and the lavish-axi CLI. Use when the user wants to learn something with a tutor at their side.
 disable-model-invocation: true
 argument-hint: "<what you want to learn>, nothing for the next lesson, or resume"
 license: MIT
@@ -33,7 +33,10 @@ Treat the current directory as a teaching workspace. Workspace paths resolve fro
 - `lessons/`: the only tree a browser ever opens. Lavish serves a lesson from the lesson's own directory and refuses anything above it, so everything a lesson links lives here:
   - `lessons/NNNN-<slug>.html`: the lessons, numbered from `0001`.
   - `lessons/assets/`: components shared by every lesson. See [Assets](#assets).
+  - `lessons/media/`: rendered clips and their final frames, when a lesson has one. See [VISUALS.md](./VISUALS.md#rendered-clips-manim).
   - `lessons/reference/*.html`: cheat sheets, reference algorithms, syntax tables, glossaries as printable pages. See [Reference Documents](#reference-documents).
+
+- `clips/`: Manim source for rendered clips. Not served.
 
 Create directories lazily. Never use Lavish's default `.lavish/` folder: the lesson file is the artifact, and Lavish keys the session by that path.
 
@@ -74,7 +77,7 @@ Fluency gives an illusory sense of mastery. Storage strength is the goal. Build 
    - `npx -y lavish-axi playbook explanation`, plus `diagram` for figures, `input` for quizzes and open questions, and any other playbook the lesson matches
    When the CLI and this file disagree about Lavish mechanics, the CLI wins.
 3. **Choose what to teach**: the user's explicit request, or the next thing in their zone of proximal development.
-4. **Write the lesson** to `lessons/NNNN-<slug>.html` following [Lessons](#lessons). Start from [templates/lesson.html](./templates/lesson.html).
+4. **Write the lesson** to `lessons/NNNN-<slug>.html` following [Lessons](#lessons) and [VISUALS.md](./VISUALS.md). Start from [templates/lesson.html](./templates/lesson.html). Check every figure as [VISUALS.md](./VISUALS.md#verify-before-opening) says before opening the lesson.
 5. **Open it**: `npx -y lavish-axi lessons/NNNN-<slug>.html`. State which design source you used, as Lavish asks.
 6. **Start the listener**: `npx -y lavish-axi poll lessons/NNNN-<slug>.html --owner tutor`. Run it through your harness's tracked background job facility, the kind that is guaranteed to wake you when the command exits (in Claude Code, a Bash call with `run_in_background`). If the harness has no such facility, run the poll in the foreground and re-run it whenever it times out; queued feedback is never lost.
 7. **Tell the user** in one line: the lesson is open, questions about any part go in the side panel, anything else goes in the terminal.
@@ -89,6 +92,7 @@ The listener returns when the user sends feedback. Read the whole response befor
 | `quiz` | Results of the closed questions: every item with the choice, whether it was correct, and attempts | Remark briefly. A miss that exposes a misconception earns a Tutor note under that question. Evidence for learning records. |
 | `warmup` | Results of the warm-up block | Same as `quiz`. A miss re-promotes that topic in `NOTES.md`; a repeated miss supersedes the learning record that claimed it known. |
 | `open` | The user's own words answering an open question, with the rubric | Grade against the rubric: what was right, what was missing, one sentence each. The main evidence for learning records. |
+| `predict` | A locked prediction: the choice or the user's words, the confidence, hit or miss | One or two sentences: what happens, and the one reason the prediction matched or missed. A confident miss marks a misconception: Tutor note under the reveal, and re-promote the topic in `NOTES.md`. |
 | `whiteboard` | An edit summary plus `scenePath` and `previewPath` | Read the summary first; open the PNG only when the summary is not enough to judge the drawing. Grade against the reference figure. Never write the scene back. |
 | `layout-warnings` | Layout issues the user chose to queue | Fix exactly those. Never chase layout issues the user has not queued. |
 | `ended` | The user pressed Send and End | Deliver the final answers in the terminal, run the [close ritual](#ending-a-session), stop polling, never reopen uninvited. |
@@ -101,6 +105,7 @@ The listener returns when the user sends feedback. Read the whole response befor
 - Append only. Existing lesson prose never moves during a session; live reload keeps the user's place.
 - Tag each note with `data-lavish-revision` and register the round in the `data-lavish-revisions` script, so the Revisions legend can reveal what was added.
 - Only when the answer carries something worth keeping: a figure, a table, a worked example, a corrected misconception. "Yes, that is right" stays in the panel.
+- A question that points at a figure, or asks how or why, gets a figure in its note, per [VISUALS.md](./VISUALS.md#tutor-notes-with-figures).
 
 **Question log**: after every handled prompt, append to `qa/NNNN-<slug>.md` under a session heading: what the user pointed at, the question, a one-line summary of the answer, and the outcome (`answered`, `tutor note`, or the learning record it led to).
 
@@ -132,14 +137,14 @@ A lesson is **beautiful**, with clean, readable typography and layout, because t
 
 Every lesson contains, in this order:
 
-1. **Warm-up**: two or three retrieval questions from earlier learning records and glossary terms, graded like a quiz and submitted with the tag `warmup`. Prefer records from sessions before the last one, and mix two related topics when the records allow it. Skip the block only in the first lesson.
-2. **Knowledge**: only what the skill of this lesson requires, drawn from `RESOURCES.md` and littered with citations.
-3. **Skills**: closed questions with instant in-page feedback and one Submit results button; at least one open question answered in the user's own words and graded by you; a whiteboard exercise when a success criterion in `MISSION.md` is a drawing or a flow to reproduce, with the reference figure revealed after submission.
+1. **Warm-up**: two or three retrieval questions from earlier learning records and glossary terms, graded like a quiz and submitted with the tag `warmup`. Prefer records from sessions before the last one, and mix two related topics when the records allow it. An earlier figure with its labels swapped for lettered markers makes a good warm-up question. Skip the block only in the first lesson.
+2. **Knowledge**: only what the skill of this lesson requires, drawn from `RESOURCES.md` and littered with citations. Words and a figure for every idea, each figure picked by the question its section answers, one concrete case before the general rule, and a prediction before each reveal: see [VISUALS.md](./VISUALS.md).
+3. **Skills**: closed questions with instant in-page feedback and one Submit results button; at least one open question answered in the user's own words and graded by you; at least one visual exercise when the lesson has a figure (predict the next frame, point at it, name the parts); a whiteboard exercise when a success criterion in `MISSION.md` is a drawing or a flow to reproduce, with the reference figure revealed after submission.
 4. **Primary source**: the single most trustworthy resource to read or watch next.
 5. **Links** to related lessons and reference documents, by relative path inside `lessons/`.
 6. **A reminder** that the tutor is at their side: select any part and ask in the panel, or ask anything in the terminal.
 
-Quiz rules: every option has the same number of words, and the same number of characters when possible. Vary which position holds the correct answer. No clue through formatting or order. No prompt is queued per click; only Submit queues, once.
+Quiz rules: every option has the same number of words, and the same number of characters when possible. Picture options have the same size, style and level of detail. Vary which position holds the correct answer. No clue through formatting or order. No prompt is queued per click; only Submit queues, once.
 
 Keep annotation on for the whole page. Native controls are interactive on their own, so the quiz and the select-and-ask channel coexist.
 
@@ -149,12 +154,13 @@ Lessons are built from reusable components in `lessons/assets/`. Reuse is the de
 
 On the first lesson, copy the templates from this skill's [assets](./assets/) folder into the workspace:
 
-- `course.css`: typography, light and dark themes, figures, tables, callouts, quiz, Tutor note, warm-up and print rules.
-- `tutor.js`: quiz grading and the results batch, open-question submit, whiteboard reveal, and clipboard fallbacks when Lavish is absent.
+- `course.css`: typography, light and dark themes, figures, tables, callouts, quiz and picture options, Tutor note, warm-up, prediction and reveal, and print rules.
+- `tutor.js`: quiz grading and the results batch, open-question submit, prediction lock and reveal, whiteboard reveal, answers that survive a live reload, and clipboard fallbacks when Lavish is absent.
+- `visuals.css` and `visuals.js`: the figure components. Concept colours, SVG classes, the learner-paced stepper, explorables, linked terms, side-by-side and small-multiple layouts, autoplay builds with Replay, and rendered clips with pause points. Their headers hold the markup contracts; [VISUALS.md](./VISUALS.md) says when to use each.
 
 `whiteboard.js` is not shipped. The first time a workspace needs a whiteboard, run `npx -y lavish-axi design` and write its current Mermaid snippet to `lessons/assets/whiteboard.js`.
 
-Once the workspace owns these files, extend them as the course grows, and never overwrite the user's edits with the templates.
+Once the workspace owns these files, extend them as the course grows, and never overwrite the user's edits with the templates. Each shipped asset carries a `tutor-assets: N` line in its header. When a workspace file is missing, copy it. When this skill's number is higher than the workspace copy's, add only the components the workspace lacks and keep every edit.
 
 ## The Mission
 
@@ -180,7 +186,7 @@ Wisdom comes from real-world interaction. When a question needs wisdom, attempt 
 
 ## Reference Documents
 
-Lessons are rarely revisited; reference documents are. While creating lessons, create reference documents in `lessons/reference/`: the compressed essence of a lesson in a format designed for quick reference and printing. Syntax and snippets, algorithms and flowcharts, poses and sequences, routines, glossaries. Once a glossary exists, every lesson adheres to it.
+Lessons are rarely revisited; reference documents are. While creating lessons, create reference documents in `lessons/reference/`: the compressed essence of a lesson in a format designed for quick reference and printing. Each entry carries its lesson's figure, static and fully labelled. Syntax and snippets, algorithms and flowcharts, poses and sequences, routines, glossaries. Once a glossary exists, every lesson adheres to it.
 
 ## `NOTES.md`
 
@@ -194,3 +200,4 @@ The user will express preferences about how they want to be taught. Record them 
 - Never queue a prompt per click inside a lesson. Submit buttons queue once.
 - Keep panel replies short. Length goes into a Tutor note or a file reply, not the panel.
 - Write learning records only on evidence. Coverage is not learning.
+- Never add motion, a slider or a clip where a labelled static figure or a stepper teaches as well.
