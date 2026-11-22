@@ -64,7 +64,8 @@
        The heading names the question the section answers; VISUALS.md picks the figure from it. -->
   <section>
     <h2>{Knowledge heading: the question this section answers}</h2>
-    <p>{The idea in plain words, one concrete case. Name the parts with linked terms, such as
+    <p>{Plain line first: the idea as you would tell a curious ten-year-old, on one concrete case.}</p>
+    <p>{Then the technical version, with every term defined on first use. Name the parts with linked terms, such as
       <span class="ref c1" data-tutor-ref="f1-a">{part A}</span> and
       <span class="ref c2" data-tutor-ref="f1-b">{part B}</span>, so hovering lights up the figure.
       Link claims to sources: <a href="{url}">{source name}</a>.}</p>
@@ -100,9 +101,9 @@
         <figcaption>{Figure 1. The claim the figure shows, not its topic.}</figcaption>
       </figure>
       <ol class="stepper-steps">
-        <li><strong>{Step 1 title}.</strong> {What appears and why, in one or two sentences.}</li>
-        <li><strong>{Step 2 title}.</strong> {The one change in this step.}</li>
-        <li><strong>{Step 3 title}.</strong> {The one change in this step, and the full picture it completes.}</li>
+        <li><strong>{Step 1 title}.</strong> {Plain line: what appears.} {Technical: why, in one sentence.}</li>
+        <li><strong>{Step 2 title}.</strong> {Plain line: the one change.} {Technical: what it does.}</li>
+        <li><strong>{Step 3 title}.</strong> {Plain line: the last change.} {Technical: the full picture it completes.}</li>
       </ol>
     </div>
 
@@ -129,7 +130,7 @@
     </form>
     <div class="reveal" data-reveal-for="p1" hidden>
       <span class="kicker">What happens</span>
-      <p>{The answer in one or two sentences, with the figure or explorable that shows it.}</p>
+      <p>{Plain line first, then the technical answer, with the figure or explorable that shows it.}</p>
 
       <!-- Explorable: only when a parameter drives an outcome. Each named input sets --name on the root and fills
            the output element with data-out="name"; a "tutor:explore" event carries every value for drawing code.

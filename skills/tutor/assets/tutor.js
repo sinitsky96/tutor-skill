@@ -1,5 +1,5 @@
 /* tutor.js: shared behaviour for every lesson in this workspace.
-   tutor-assets: 2
+   tutor-assets: 3
    Copied from the tutor skill on the first lesson; the workspace owns it from then on.
 
    With Lavish Editor present (window.lavish), submissions are queued as prompts for the tutor.
@@ -9,10 +9,10 @@
 
    Choices, drafts and locked predictions survive a live reload (the tutor appends Tutor notes
    mid-session) through sessionStorage, a per-viewer convenience; without storage the page still works.
-   Figures (steppers, explorables, linked terms, autoplay, clips) live in visuals.js.
+   Figures (steppers, explorables, linked terms, autoplay with Replay, clips) live in visuals.js.
 
-   Markup contract (see templates/lesson.html):
-     <body data-lesson="0001-slug">
+   Markup contract (see templates/lesson.html and templates/paper-lesson.html):
+     <body data-lesson="0001-slug" data-paper="paper-slug (paper lessons only)">
      <form class="quiz" data-tutor-quiz="quiz|warmup" data-lavish-question="quiz">
        <fieldset data-q="q1" data-answer="b"> <legend>Question</legend>
          <label><input type="radio" name="q1" value="a"> ...</label> ...
@@ -26,16 +26,22 @@
        <p class="question">...</p> <textarea name="answer"></textarea>
        <div class="actions"><button type="submit">Send to tutor</button><span class="status"></span></div>
      </form>
-     <form class="predict" data-tutor-predict data-q="p1" data-answer="b" data-lavish-question="predict-p1">
+     <form class="predict" data-tutor-predict data-q="p1" data-before="Table 2 (paper lessons)" data-answer="b (closed only)"
+           data-lavish-question="predict-p1">
        <p class="question">...</p>
-       <div class="choices"><label><input type="radio" name="p1" value="a"> ...</label> ...</div>
-         (or a <textarea> instead of choices for a free prediction; then leave out data-answer)
+       <div class="choices"><label><input type="radio" name="p1-choice" value="a"> ...</label> ...</div>  (optional)
+       <textarea name="prediction"></textarea>                                                   (optional)
        <fieldset class="confidence"><legend>How sure are you?</legend>
-         <label><input type="radio" name="p1-sure" value="50"> 50%</label> ...</fieldset>   (optional)
+         <label><input type="radio" name="p1-sure" value="50"> 50%, a guess</label> ... </fieldset>
        <p class="verdict"></p>
-       <div class="actions"><button type="submit">Lock it in</button><span class="status"></span></div>
+       <div class="actions"><button type="submit">Lock in prediction</button><span class="status"></span></div>
      </form>
-     <div class="reveal" data-reveal-for="p1" hidden>Shown once the prediction is locked.</div>
+     <div class="reveal" data-reveal-for="p1" hidden> what happens; in a paper lesson, the result with its location </div>
+     <form class="readcheck" data-tutor-readcheck data-q="r1" data-passage="§4.1" data-lavish-question="readcheck-r1">
+       <p class="question">...</p> <textarea name="answer"></textarea>
+       <div class="actions"><button type="submit">Send to tutor</button>
+         <button type="button" class="secondary" data-tutor-skip>Skip</button><span class="status"></span></div>
+     </form>
      <section class="whiteboard-exercise"> <div class="mermaid">...</div>
        <button type="button" data-tutor-reveal>Reveal reference</button>
        <details data-tutor-reference><summary>Reference figure</summary>...</details>
@@ -45,6 +51,7 @@
   "use strict";
 
   var lessonId = (document.body && document.body.getAttribute("data-lesson")) || document.title || "lesson";
+  var paperId = (document.body && document.body.getAttribute("data-paper")) || null;
 
   function lavish() {
     return typeof window !== "undefined" && window.lavish ? window.lavish : null;
@@ -201,7 +208,7 @@
         text: summary,
         element: form,
         queueKey: form.getAttribute("data-lavish-question") || kind,
-        data: { lesson: lessonId, kind: kind, items: items }
+        data: { lesson: lessonId, paper: paperId, kind: kind, items: items }
       });
       if (queued) {
         setStatus(statusEl, "Queued for the tutor. Press Send to Agent in the panel.");
@@ -243,7 +250,7 @@
         text: question,
         element: form,
         queueKey: form.getAttribute("data-lavish-question") || "open-" + q,
-        data: { lesson: lessonId, q: q, question: question, rubric: rubric, answer: answer }
+        data: { lesson: lessonId, paper: paperId, q: q, question: question, rubric: rubric, answer: answer }
       });
       if (queued) {
         setStatus(statusEl, "Queued for the tutor. Press Send to Agent in the panel.");
@@ -253,7 +260,7 @@
     });
   }
 
-  /* Predictions: commit, optionally with a confidence, lock, then reveal */
+  /* Predictions: commit with a confidence, lock, then reveal what happens (in paper lessons, the result) */
 
   function revealFor(q, scroll) {
     document.querySelectorAll('[data-reveal-for="' + q + '"]').forEach(function (block, index) {
@@ -264,6 +271,7 @@
 
   function initPredict(form) {
     var q = form.getAttribute("data-q") || "predict";
+    var before = form.getAttribute("data-before") || "";
     var answer = form.getAttribute("data-answer");
     var statusEl = form.querySelector(".status");
     var verdict = form.querySelector(".verdict");
@@ -277,9 +285,13 @@
       lockForm(form);
       if (closed) {
         form.setAttribute("data-state", hit ? "hit" : "miss");
-        if (verdict) verdict.textContent = hit ? "Your prediction was right." : "Not what happens. See below.";
+        if (verdict) {
+          verdict.textContent = paperId
+            ? (hit ? "Your prediction matched the paper." : "The paper found otherwise. See below.")
+            : (hit ? "Your prediction was right." : "Not what happens. See below.");
+        }
       } else if (verdict) {
-        verdict.textContent = "Locked in. What happens is below.";
+        verdict.textContent = paperId ? "Locked in. The paper's result is below." : "Locked in. What happens is below.";
       }
     }
 
@@ -324,11 +336,16 @@
       var closed = !!(chosen && answer);
       var hit = closed ? chosen.value === answer : null;
       var prediction = chosen ? chosen.value + " \"" + labelText(chosen) + "\"" : "\"" + words + "\"";
-      var prompt = "Prediction in " + lessonId + ": \"" + question + "\". Predicted " + prediction +
+      var source = paperId ? "the paper's answer" : "the answer";
+      var prompt = "Prediction in " + lessonId + (paperId ? " (paper " + paperId + ")" : "") +
+        (before ? ", before " + before : "") + ": \"" + question + "\". Predicted " + prediction +
         (chosen && words ? ", because \"" + words + "\"" : "") +
         (confidence ? ", " + confidence.value + "% sure" : "") + "." +
-        (closed ? " Outcome: " + (hit ? "hit" : "miss") + " (the answer is " + answer + ")." : " Outcome: judge it against what happens.") +
-        " Reply in one or two sentences: what happens, and the one reason the prediction matched or missed.";
+        (closed ? " Outcome: " + (hit ? "hit" : "miss") + " (" + source + " is " + answer + ")." :
+          (paperId ? " Outcome: judge it against the paper." : " Outcome: judge it against what happens.")) +
+        (paperId
+          ? " Reply in one or two sentences: what the paper found, with its location, and the one reason the prediction matched or missed. Log it in the paper file."
+          : " Reply in one or two sentences: what happens, and the one reason the prediction matched or missed.");
 
       showLocked(hit, closed);
       saveState(key, {
@@ -346,7 +363,7 @@
         element: form,
         queueKey: form.getAttribute("data-lavish-question") || "predict-" + q,
         data: {
-          lesson: lessonId, q: q, question: question,
+          lesson: lessonId, paper: paperId, q: q, before: before, question: question,
           choice: chosen ? chosen.value : null, choiceText: chosen ? labelText(chosen) : null,
           words: words || null, confidence: confidence ? Number(confidence.value) : null,
           closed: closed, hit: hit
@@ -358,6 +375,66 @@
         fallbackCopy(prompt, form, statusEl, "Prediction");
       }
     });
+  }
+
+  /* Reading check: a paraphrase of one passage, or a skip at no cost */
+
+  function initReadcheck(form) {
+    var q = form.getAttribute("data-q") || "readcheck";
+    var passage = form.getAttribute("data-passage") || "";
+    var statusEl = form.querySelector(".status");
+    var area = form.querySelector("textarea");
+    var questionEl = form.querySelector(".question");
+    var skip = form.querySelector("[data-tutor-skip]");
+
+    if (area) {
+      var draft = loadState()["readcheck:" + q];
+      if (draft && !area.value) area.value = draft;
+      area.addEventListener("input", function () {
+        saveState("readcheck:" + q, area.value);
+      });
+    }
+
+    function send(outcome, words) {
+      var question = questionEl ? questionEl.textContent.trim() : q;
+      var prompt = outcome === "skip"
+        ? "Reading check in " + lessonId + (paperId ? " (paper " + paperId + ")" : "") + ", passage " + passage +
+          ": skipped. Log it, no penalty, and do not ask again for this paper."
+        : "Reading check in " + lessonId + (paperId ? " (paper " + paperId + ")" : "") + ", passage " + passage +
+          ", to \"" + question + "\":\n\n" + words +
+          "\n\nAcknowledge in one line. If it shows a misreading, add a Tutor note quoting the passage with its location.";
+      lockForm(form);
+      var queued = queue(prompt, {
+        tag: "readcheck",
+        text: question,
+        element: form,
+        queueKey: form.getAttribute("data-lavish-question") || "readcheck-" + q,
+        data: { lesson: lessonId, paper: paperId, q: q, passage: passage, outcome: outcome, answer: words || null }
+      });
+      if (queued) {
+        setStatus(statusEl, outcome === "skip" ? "Skipped. Press Send to Agent in the panel." : "Queued for the tutor. Press Send to Agent in the panel.");
+      } else {
+        fallbackCopy(prompt, form, statusEl, outcome === "skip" ? "Skip note" : "Answer");
+      }
+    }
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (form.getAttribute("data-locked") === "true") return;
+      var words = area ? area.value.trim() : "";
+      if (!words) {
+        setStatus(statusEl, "Write it in your own words, or press Skip.");
+        return;
+      }
+      send("paraphrase", words);
+    });
+
+    if (skip) {
+      skip.addEventListener("click", function () {
+        if (form.getAttribute("data-locked") === "true") return;
+        send("skip", "");
+      });
+    }
   }
 
   /* Whiteboard exercises: reveal the reference figure after the user has submitted */
@@ -403,6 +480,7 @@
     document.querySelectorAll("form[data-tutor-quiz]").forEach(initQuiz);
     document.querySelectorAll("form[data-tutor-open]").forEach(initOpen);
     document.querySelectorAll("form[data-tutor-predict]").forEach(initPredict);
+    document.querySelectorAll("form[data-tutor-readcheck]").forEach(initReadcheck);
     document.querySelectorAll("[data-tutor-reveal]").forEach(initReveal);
     initPrint();
   }

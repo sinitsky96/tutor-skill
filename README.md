@@ -44,13 +44,45 @@ Run it in the directory that should hold the learning workspace, one topic per d
 | Command | Does |
 | --- | --- |
 | `/tutor <topic>` | First run: mission interview, resource hunt, first lesson. Later: teach that specific thing. |
+| `/tutor <paper>` | Paper mode, for an arXiv ID, DOI, paper URL or PDF: verify the paper, read it in full, then teach it as an arc of Map, Method, Results and Judge. |
 | `/tutor` | The next lesson in your zone of proximal development. |
 | `/tutor resume` | Reopen the latest lesson and start listening again. |
+| `/tutor-subagent <topic>` | From any working chat: a background subagent writes and runs one short lesson on something that came up, while your task keeps going. See [Side lessons](#side-lessons). |
 
 While a lesson is open:
 
 - **Side panel**: select any text, click any figure or table cell, write the question, press Send to Agent. Quizzes and open questions submit from the page.
 - **Terminal**: anything else. "Go deeper on X", "quiz me on lesson 3", "next lesson", "done".
+
+Paper mode switches on by itself when the subject is one specific paper. Its lessons add:
+
+- **Predict before reveal**: lock in a prediction and how sure you are before each result appears.
+- **Locations**: every claim cites its section, figure, table or page, from a verified, versioned copy of the paper.
+- **Claim ledger**: headline claims split into parts, each labelled from Established to Speculative by its evidence.
+- **Reading check**: once per paper, paraphrase a passage you read yourself, or skip it.
+
+### Side lessons
+
+Mid-task, in any chat: `/tutor-subagent <topic>`, or nothing for the last thing you were unsure about. Like `/btw`, it starts from the whole conversation and keeps the side talk out of it: a background subagent, forked from the chat, writes one 5-minute lesson tied to your own code or data, opens it, and answers your panel questions itself. Your task keeps going in the main chat.
+
+```
+main chat                          subagent (fork of the chat, background)
+ |  /tutor-subagent <topic>          |
+ |  focus note --------------------->|  reads the tutor rules, finds sources
+ |  keeps working                    |  writes ~/tutor-side-lessons/lessons/NNNN-<slug>.html
+ |                                   |  checks it in light and dark, opens it
+ |                                   |  answers side-panel questions, grades the quiz
+ |  "done" ------------------------->|  closes the lesson
+ |<------------ report --------------|
+```
+
+| Command | Does |
+| --- | --- |
+| `/tutor-subagent <topic>` | A side lesson on that topic, framed by where it came up |
+| `/tutor-subagent` | A side lesson on the last thing you seemed unsure about |
+| `/tutor-subagent resume` | Reopen the newest side lesson with a new subagent |
+
+Side lessons live in `~/tutor-side-lessons/`, not in your repo and not in a `/tutor` workspace. Install `skills/tutor-subagent` beside `skills/tutor`: it uses tutor's template, assets and rules.
 
 ## Workspace
 
@@ -61,6 +93,7 @@ GLOSSARY.md           the words this workspace uses
 NOTES.md              the tutor's notes on your preferences and the next lesson
 learning-records/     what you have demonstrably learned
 qa/                   every question you asked, per lesson
+papers/               one file per paper in paper mode, with its PDF
 clips/                Manim source for rendered clips, when a lesson has one
 lessons/              the lessons, the only tree a browser opens
   assets/             course.css, tutor.js, visuals.css, visuals.js, whiteboard.js

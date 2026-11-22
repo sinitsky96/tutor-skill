@@ -1,0 +1,5 @@
+interface:
+  display_name: "Tutor subagent"
+  short_description: "A background subagent writes a short lesson on a topic from this chat"
+policy:
+  allow_implicit_invocation: false

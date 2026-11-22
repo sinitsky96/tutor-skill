@@ -1,7 +1,6 @@
 /* course.css: the shared stylesheet for every lesson in this workspace.
-   tutor-assets: 2
+   tutor-assets: 3
    Copied from the tutor skill on the first lesson; the workspace owns it from then on.
-   Figure components (concept colours, stepper, explorable, autoplay, clips) live in visuals.css.
    Design: a Tufte-like reading column, serif body, sans UI, light and dark, prints well. */
 
 :root {
@@ -125,6 +124,9 @@ figcaption { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-2); m
 .fig-rule { stroke: var(--ink-3); fill: none; }
 .fig-accent { stroke: var(--accent); fill: none; }
 .fig-panel { fill: var(--panel); stroke: var(--rule); }
+.fig-dot { fill: var(--accent); }
+
+/* Figure components (concept colours, stepper, explorable, autoplay with Replay, clips) live in visuals.css. */
 
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-family: var(--sans); font-size: 0.88rem; }
@@ -205,7 +207,31 @@ form.open textarea {
 }
 form.open .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
 
-/* Predictions and their reveals: commit first, then see what happens */
+/* Paper mode: the paper strip, predictions, reveals, the claim ledger, the reading check */
+
+.paper-strip {
+  margin: 1.2rem 0 1.6rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--panel);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.paper-strip strong { color: var(--ink); font-weight: 600; }
+.paper-strip .arc { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.4rem; padding: 0; list-style: none; }
+.paper-strip .arc li { margin: 0; padding: 0.05rem 0.55rem; border: 1px solid var(--rule); border-radius: 999px; }
+.paper-strip .arc li[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+
+.loc { font-family: var(--sans); font-size: 0.78em; color: var(--ink-3); white-space: nowrap; }
+.loc a { color: inherit; }
+
+.why-how-what { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0.8rem; margin: 1rem 0; }
+.why-how-what > div { min-width: 0; padding: 0.6rem 0.8rem; border-top: 3px solid var(--accent); background: var(--panel); border-radius: 0 0 6px 6px; }
+.why-how-what h3 { margin: 0 0 0.3rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent-ink); }
+.why-how-what p { margin: 0; font-size: 0.95rem; }
 
 form.predict {
   margin: 1.4rem 0 0.6rem;
@@ -236,6 +262,7 @@ form.predict .confidence legend { font-family: var(--sans); font-size: 0.82rem; 
 form.predict .confidence label { display: inline-block; margin-right: 0.6rem; }
 form.predict .verdict { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; margin: 0.5rem 0 0; min-height: 1.2em; }
 form.predict .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+form.predict[data-locked="true"] { opacity: 0.92; }
 form.predict[data-state="hit"] { border-color: var(--ok); background: var(--ok-soft); }
 form.predict[data-state="hit"] .verdict { color: var(--ok); }
 form.predict[data-state="miss"] { border-color: var(--no); background: var(--no-soft); }
@@ -244,6 +271,45 @@ form.predict[data-state="miss"] .verdict { color: var(--no); }
 .reveal[hidden] { display: none !important; }
 .reveal { margin: 0.6rem 0 1.4rem; padding: 0.2rem 1rem 0.6rem; border: 1px solid var(--rule); border-radius: 8px; }
 .reveal > .kicker { display: block; margin-top: 0.4rem; }
+
+.claim-ledger td:first-child, .claim-ledger th:first-child { white-space: nowrap; }
+.strength {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.strength.established { color: var(--ok); background: var(--ok-soft); }
+.strength.supported { color: var(--accent-ink); background: var(--accent-soft); }
+.strength.preliminary { color: var(--warn); background: var(--warn-soft); }
+.strength.speculative { color: var(--ink-3); background: var(--panel); }
+.strength.contested { color: var(--no); background: var(--no-soft); }
+.overclaim { text-decoration: underline wavy var(--no); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+form.readcheck {
+  margin: 1.4rem 0;
+  padding: 0.8rem 1rem;
+  border: 1px dashed var(--rule);
+  border-radius: 8px;
+}
+form.readcheck .kicker { display: block; margin-bottom: 0.2rem; }
+form.readcheck textarea {
+  width: 100%;
+  min-height: 5rem;
+  padding: 0.6rem;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+form.readcheck .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
 
 /* Whiteboard exercises */
 
@@ -267,7 +333,7 @@ details.tutor-note > :not(summary) { font-size: 0.95rem; }
 
 /* Layout safety, after the Lavish design guidance */
 
-:where(.grid, .flex, .two-col, .actions) > * { min-width: 0; }
+:where(.grid, .flex, .two-col, .actions, .why-how-what) > * { min-width: 0; }
 :where(p, h1, h2, h3, h4, li, dd, blockquote, figcaption, td, th, summary) { overflow-wrap: anywhere; }
 :where(img, svg, video, canvas, iframe) { max-width: 100%; height: auto; }
 
@@ -280,4 +346,6 @@ details.tutor-note > :not(summary) { font-size: 0.95rem; }
   figure, table, fieldset, details.tutor-note, .callout, form.predict { break-inside: avoid; }
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #444; }
   details.tutor-note { background: #f3f3f3; border-color: #999; }
+  .reveal[hidden] { display: block !important; }
+  form.predict, form.readcheck, .paper-strip, .why-how-what > div { background: #fff; }
 }
