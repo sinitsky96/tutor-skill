@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{Lesson title}</title>
+<link rel="stylesheet" href="assets/course.css">
+<link rel="stylesheet" href="assets/visuals.css">
+<!--
+  Template for a paper-mode lesson. Replace every {placeholder}. Keep the order of sections.
+  Rules that live in SKILL.md and PAPER-MODE.md: one tightly scoped win, short, a warm-up and skills practice,
+  equal-length options with the correct position varied, no prompt queued per click,
+  a location on every claim from the paper, no spoiler above a prediction.
+  Rules for figures live in VISUALS.md: the method as a stepper, results as small multiples or a stepper.
+  Lavish serves only this directory and below, so every lesson link is relative and inside lessons/.
+  Links to the paper itself go to the versioned PDF page, for example https://arxiv.org/pdf/{id}v{N}#page={p}.
+-->
+<!-- Revisions registry: add one entry per round of Tutor notes, oldest first. Remove this block on a first draft.
+<script type="application/json" data-lavish-revisions>
+[{ "id": "r1", "label": "Session 1 notes", "timestamp": "{ISO timestamp}", "summary": "{what was added}" }]
+</script>
+-->
+</head>
+<body data-lesson="{NNNN-slug}" data-paper="{paper-slug}">
+<article class="lesson">
+
+  <header>
+    <span class="kicker">Lesson {NNNN} of {Mission topic}: {Map | Method | Results | Judge}</span>
+    <h1>{Lesson title, with no result in it}</h1>
+    <p class="lede">{One sentence: the single tangible win this lesson gives, tied to the mission. No result in it.}</p>
+    <p class="meta">About {5} minutes. Builds on <a href="{NNNN-previous}.html">{previous lesson title}</a>.</p>
+  </header>
+
+  <!-- Paper strip: identity, version, status, the tutor's read scope, the arc step. No results here. -->
+  <div class="paper-strip">
+    <strong>{Full title}</strong>, {first author} et al., {year}.
+    <a href="{https://arxiv.org/abs/{id}v{N}}">arXiv:{id}v{N}</a>, {preprint | venue and year}.
+    Tutor read: {full text with appendices | sections}.
+    <ul class="arc" aria-label="Paper arc">
+      <li>Map</li>
+      <li aria-current="step">Method</li>
+      <li>Results</li>
+      <li>Judge</li>
+    </ul>
+  </div>
+
+  <!-- Warm-up: two or three retrieval questions from earlier learning records and glossary terms.
+       Skip this block only in the first lesson of the workspace. -->
+  <section class="warmup">
+    <h2>Before we start</h2>
+    <form class="quiz" data-tutor-quiz="warmup" data-lavish-question="warmup">
+      <fieldset data-q="w1" data-answer="{b}">
+        <legend>{Retrieval question from an earlier lesson}</legend>
+        <label><input type="radio" name="w1" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="w1" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="w1" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      <fieldset data-q="w2" data-answer="{a}">
+        <legend>{Retrieval question from a different earlier topic or paper}</legend>
+        <label><input type="radio" name="w2" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="w2" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="w2" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence.}</p>
+      </fieldset>
+      <div class="actions">
+        <button type="submit">Submit warm-up</button>
+        <span class="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- Knowledge: ELI5 then technical, a figure per idea, a location on every claim. -->
+  <section>
+    <h2>{Knowledge heading}</h2>
+
+    <!-- Map lessons only: WHY / HOW / WHAT. -->
+    <div class="why-how-what">
+      <div><h3>Why</h3><p>{The problem, why it matters, the gap claimed.} <span class="loc"><a href="{pdf-page-url}">§1</a></span></p></div>
+      <div><h3>How</h3><p>{Method and evaluation setup: data, splits, baselines, metrics.} <span class="loc"><a href="{pdf-page-url}">§3</a></span></p></div>
+      <div><h3>What</h3><p>{What the paper claims, without the numbers the lesson asks you to predict.} <span class="loc"><a href="{pdf-page-url}">§5</a></span></p></div>
+    </div>
+
+    <p>{Plain line first.} {Then the technical version, with every term defined on first use.} <span class="loc"><a href="{pdf-page-url}">§{n}</a></span></p>
+
+    <!-- The method's data flow or pipeline: a stepper, one change per step (VISUALS.md). Static only for pure structure.
+         Parts without data-step are context; data-step="2" appears at step 2 and stays; "2-3" shows at 2 and 3 only. -->
+    <div class="stepper" id="f1" data-tutor-stepper>
+      <figure>
+        <svg viewBox="0 0 640 150" role="img" aria-labelledby="f1-title">
+          <title id="f1-title">{What the figure shows}</title>
+          <defs>
+            <marker id="f1-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+            </marker>
+          </defs>
+          <g id="f1-a" data-step="1">
+            <title>{Input}</title>
+            <rect class="fig-c1-soft" x="30" y="40" width="180" height="70" rx="8"></rect>
+            <text class="fig-text middle" x="120" y="80">{Input}</text>
+          </g>
+          <g id="f1-flow" data-step="2" style="color: var(--ink-2)">
+            <title>{What the method does to it}</title>
+            <path class="fig-line" d="M214 75 H 422" marker-end="url(#f1-arrow)"></path>
+            <text class="fig-text small muted middle" x="318" y="64">{operation}</text>
+          </g>
+          <g id="f1-b" data-step="3">
+            <title>{Output}</title>
+            <rect class="fig-c2-soft" x="430" y="40" width="180" height="70" rx="8"></rect>
+            <text class="fig-text middle" x="520" y="80">{Output}</text>
+          </g>
+        </svg>
+        <figcaption>{Figure 1. The claim the figure shows, with no result in it.} <span class="loc">After Fig. {n}</span></figcaption>
+      </figure>
+      <ol class="stepper-steps">
+        <li><strong>{Step 1 title}.</strong> {Plain line.} {Technical version.} <span class="loc">§{n}</span></li>
+        <li><strong>{Step 2 title}.</strong> {Plain line.} {Technical version.} <span class="loc">§{n}</span></li>
+        <li><strong>{Step 3 title}.</strong> {Plain line.} {Technical version.} <span class="loc">§{n}</span></li>
+      </ol>
+    </div>
+
+    <!-- Predict, then reveal: one pair per result this lesson shows. Nothing above it may give the result away. -->
+    <form class="predict" data-tutor-predict data-q="p1" data-before="{Table 2}" data-answer="{b}" data-lavish-question="predict-p1">
+      <span class="kicker">Predict first</span>
+      <p class="question">{From the setup alone: which result do you expect in Table 2?}</p>
+      <div class="choices">
+        <label><input type="radio" name="p1-choice" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="p1-choice" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="p1-choice" value="c"> {option, same length as the others}</label>
+      </div>
+      <textarea name="prediction" placeholder="Why? One line is enough."></textarea>
+      <fieldset class="confidence">
+        <legend>How sure are you?</legend>
+        <label><input type="radio" name="p1-sure" value="50"> 50%, a guess</label>
+        <label><input type="radio" name="p1-sure" value="70"> 70%</label>
+        <label><input type="radio" name="p1-sure" value="90"> 90%, sure</label>
+      </fieldset>
+      <p class="verdict"></p>
+      <div class="actions">
+        <button type="submit">Lock in prediction</button>
+        <span class="status"></span>
+      </div>
+    </form>
+    <div class="reveal" data-reveal-for="p1" hidden>
+      <span class="kicker">What the paper found</span>
+      <p>{The result, plain line first, then the numbers.} <span class="loc"><a href="{pdf-page-url}">Table 2</a></span></p>
+      <!-- A figure of the result. A change across conditions (an ablation, a curve over subjects or sessions) is a stepper
+           or small multiples (.multiples) on one scale. An autoplay build (figure.anim) inside a reveal starts when it opens. -->
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>{Condition}</th><th>{Metric}</th><th>{Metric}</th></tr></thead>
+          <tbody>
+            <tr><td>{row}</td><td>{value}</td><td>{value}</td></tr>
+            <tr><td>{row}</td><td>{value}</td><td>{value}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">{Why the result came out this way, in one or two sentences.}</div>
+    </div>
+
+    <!-- Open prediction variant: no .choices and no data-answer; the textarea holds the prediction itself.
+    <form class="predict" data-tutor-predict data-q="p2" data-before="{Fig. 6}" data-lavish-question="predict-p2">
+      <span class="kicker">Predict first</span>
+      <p class="question">{Roughly how much does accuracy drop when {piece} is removed?}</p>
+      <textarea name="prediction" placeholder="A number or a range, and one line on why."></textarea>
+      <fieldset class="confidence">
+        <legend>How sure are you?</legend>
+        <label><input type="radio" name="p2-sure" value="50"> 50%, a guess</label>
+        <label><input type="radio" name="p2-sure" value="70"> 70%</label>
+        <label><input type="radio" name="p2-sure" value="90"> 90%, sure</label>
+      </fieldset>
+      <p class="verdict"></p>
+      <div class="actions"><button type="submit">Lock in prediction</button><span class="status"></span></div>
+    </form>
+    <div class="reveal" data-reveal-for="p2" hidden>{The result, with its location.}</div>
+    -->
+
+    <!-- Results and Judge lessons: the claim ledger. Strength chips: established, supported, preliminary, speculative, contested.
+    <div class="table-wrap">
+      <table class="claim-ledger">
+        <thead><tr><th>#</th><th>Sub-claim</th><th>Evidence</th><th>Strength</th></tr></thead>
+        <tbody>
+          <tr><td>C1.1</td><td>{one subject, one measured thing, one condition}</td><td class="loc">{Table 2, §4.3}</td><td><span class="strength supported">Supported</span></td></tr>
+          <tr><td>C1.2</td><td>{...}</td><td class="loc">{Fig. 5}</td><td><span class="strength preliminary">Preliminary</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>{The paper's wording}: "<span class="overclaim">{the phrase that outruns the evidence}</span>" <span class="loc">§{n}</span></p>
+    -->
+
+    <!-- A Tutor note looks like this. Only the tutor adds them, during a session, directly under the element the user asked about.
+    <details class="tutor-note" data-lavish-revision="r1">
+      <summary>{One-line summary of the question}</summary>
+      <p>{The answer worth keeping, with its location in the paper.}</p>
+    </details>
+    -->
+  </section>
+
+  <!-- Skills: closed questions, at least one open question, the paper exercises of this arc step,
+       and the reading check when it is due. -->
+  <section>
+    <h2>Practice</h2>
+    <form class="quiz" data-tutor-quiz="quiz" data-lavish-question="quiz">
+      <fieldset data-q="q1" data-answer="{c}">
+        <legend>{Question that needs the idea, not the words}</legend>
+        <label><input type="radio" name="q1" value="a"> {option, same length as the others}</label>
+        <label><input type="radio" name="q1" value="b"> {option, same length as the others}</label>
+        <label><input type="radio" name="q1" value="c"> {option, same length as the others}</label>
+        <p class="verdict"></p>
+        <p class="why">{Why the right answer is right, in one sentence, with its location.}</p>
+      </fieldset>
+      <fieldset data-q="q2" data-answer="{a}">
+        <legend>{Spot the overclaim: which sentence says more than its evidence shows?}</legend>
+        <label><input type="radio" name="q2" value="a"> {quoted sentence, with its location}</label>
+        <label><input type="radio" name="q2" value="b"> {quoted sentence, with its location}</label>
+        <label><input type="radio" name="q2" value="c"> {quoted sentence, with its location}</label>
+        <p class="verdict"></p>
+        <p class="why">{Which label the evidence earns, and the wording that goes past it.}</p>
+      </fieldset>
+      <div class="actions">
+        <button type="submit">Submit results</button>
+        <span class="status"></span>
+      </div>
+    </form>
+
+    <h3>In your own words</h3>
+    <form class="open" data-tutor-open data-q="o1" data-lavish-question="open-o1"
+          data-rubric="{What a complete answer must contain, as a short list the tutor grades against. For a split-this-claim question: the sub-claim list.}">
+      <p class="question">{Split this claim into the parts that each need their own evidence: "{claim}" ({location}).}</p>
+      <textarea name="answer" placeholder="Write from memory, then send."></textarea>
+      <div class="actions">
+        <button type="submit">Send to tutor</button>
+        <span class="status"></span>
+      </div>
+    </form>
+
+    <!-- Reading check: once per paper, only after the user said they read a part themselves.
+         The passage comes from that part, and no lesson has taught it yet. Never call it a test.
+    <form class="readcheck" data-tutor-readcheck data-q="r1" data-passage="{§4.1}" data-lavish-question="readcheck-r1">
+      <span class="kicker">From your reading</span>
+      <p class="question">{From your reading of §4.1: in your own words, how do they {...}?}</p>
+      <textarea name="answer" placeholder="Paraphrase it, or skip."></textarea>
+      <div class="actions">
+        <button type="submit">Send to tutor</button>
+        <button type="button" class="secondary" data-tutor-skip>Skip</button>
+        <span class="status"></span>
+      </div>
+    </form>
+    -->
+  </section>
+
+  <section>
+    <h2>Go further</h2>
+    <div class="primary-source">
+      <span class="kicker">Primary source</span>
+      <a href="{pdf-page-url}">{The paper, §{n} to §{m}, pages {p} to {q}}</a>: {what to read next and what to look for in it.}
+    </div>
+    <ul class="sources">
+      <li><a href="{url}">{Other verified source cited above}</a>: {one line on what it covers.}</li>
+    </ul>
+    <p>Related: <a href="reference/{paper-slug}.html">{The paper on one page}</a>, <a href="{NNNN-next}.html">{next lesson of the arc, when it exists}</a>.</p>
+  </section>
+
+  <p class="ask-reminder">Your tutor is at your side. Select any sentence, figure or table cell and ask about it in the side panel, or ask anything in the terminal.</p>
+
+</article>
+<script src="assets/tutor.js"></script>
+<script src="assets/visuals.js"></script>
+</body>
+</html>
