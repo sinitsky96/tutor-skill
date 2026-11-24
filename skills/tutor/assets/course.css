@@ -1,5 +1,5 @@
 /* course.css: the shared stylesheet for every lesson in this workspace.
-   tutor-assets: 3
+   tutor-assets: 5
    Copied from the tutor skill on the first lesson; the workspace owns it from then on.
    Design: a Tufte-like reading column, serif body, sans UI, light and dark, prints well. */
 
@@ -225,7 +225,8 @@ form.open .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0
 .paper-strip .arc li { margin: 0; padding: 0.05rem 0.55rem; border: 1px solid var(--rule); border-radius: 999px; }
 .paper-strip .arc li[aria-current="step"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
 
-.loc { font-family: var(--sans); font-size: 0.78em; color: var(--ink-3); white-space: nowrap; }
+/* A floor of 11.5 px: inside a figcaption, 0.78em came out at 10 px and failed the phone check. */
+.loc { font-family: var(--sans); font-size: max(0.78em, 11.5px); color: var(--ink-3); white-space: nowrap; }
 .loc a { color: inherit; }
 
 .why-how-what { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 0.8rem; margin: 1rem 0; }
@@ -334,8 +335,38 @@ details.tutor-note > :not(summary) { font-size: 0.95rem; }
 /* Layout safety, after the Lavish design guidance */
 
 :where(.grid, .flex, .two-col, .actions, .why-how-what) > * { min-width: 0; }
-:where(p, h1, h2, h3, h4, li, dd, blockquote, figcaption, td, th, summary) { overflow-wrap: anywhere; }
+:where(p, h1, h2, h3, h4, li, dd, blockquote, figcaption, summary) { overflow-wrap: anywhere; }
+/* Table cells keep whole words. "anywhere" lets a phone squeeze a column down to a few letters per line
+   ("Writt / en"); break-word splits a word only when it cannot fit, and .table-wrap scrolls if a row still cannot. */
+:where(td, th) { overflow-wrap: break-word; }
 :where(img, svg, video, canvas, iframe) { max-width: 100%; height: auto; }
+
+/* Touch screens: controls at least 44 px tall, rows of options easy to hit (WCAG 2.5.8 asks for 24 px; 44 is the
+   comfortable size). Rules for phones: VISUALS.md, "Phones". */
+@media (pointer: coarse) {
+  button, .btn { min-height: 2.75rem; }
+  form.quiz label, form.predict .choices label, form.predict .confidence label { padding-top: 0.7rem; padding-bottom: 0.7rem; }
+  details > summary { padding: 0.45rem 0; }
+  audio { min-height: 2.75rem; }
+}
+
+/* Phones: below 720 px, the same width at which visuals.css swaps a wide drawing for its narrow one. */
+@media (max-width: 720px) {
+  /* A Tutor note keeps its figures at reading size by giving them its padding. */
+  details.tutor-note { padding-left: 0.6rem; padding-right: 0.6rem; }
+  details.tutor-note > :is(figure, .stepper, .explore, .compare) { margin-left: -0.5rem; margin-right: -0.5rem; }
+
+  /* A claim ledger stacks each row as a card instead of scrolling sideways: the claim number and its strength
+     on one line, then the sub-claim, then the evidence. Columns as in the paper-lesson template. */
+  table.claim-ledger thead { display: none; }
+  table.claim-ledger, table.claim-ledger tbody { display: block; }
+  table.claim-ledger tr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; padding: 0.55rem 0; border-bottom: 1px solid var(--rule); }
+  table.claim-ledger td { display: block; border: 0; padding: 0; }
+  table.claim-ledger td:first-child { order: 0; font-weight: 700; }
+  table.claim-ledger td:last-child { order: 1; }
+  table.claim-ledger td:nth-child(2) { order: 2; flex-basis: 100%; }
+  table.claim-ledger td:nth-child(3) { order: 3; flex-basis: 100%; white-space: normal; }
+}
 
 /* Print */
 

@@ -25,6 +25,7 @@ you                                   the tutor (your agent)
 - An agent harness that runs skills, such as Claude Code or Codex.
 - Node 18 or newer, for `npx -y lavish-axi`. Nothing is installed globally.
 - A browser.
+- [uv](https://docs.astral.sh/uv/), for the phone check every lesson passes before it opens: `scripts/mobile_check.py` runs Playwright through it, and nothing is installed into the project. Without it, the tutor says it could not run the check.
 - Optional: [Manim Community Edition](https://docs.manim.community/) for rendered clips (`conda install -c conda-forge manim`). Without it, lessons use steppers instead.
 
 ## Install

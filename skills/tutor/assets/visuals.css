@@ -1,5 +1,5 @@
 /* visuals.css: figure components for every lesson in this workspace.
-   tutor-assets: 2
+   tutor-assets: 4
    Copied from the tutor skill on the first lesson; the workspace owns it from then on.
    Load after course.css, whose tokens it uses. When to use each piece: VISUALS.md in the tutor skill.
    Markup contracts: the header of visuals.js. */
@@ -40,6 +40,7 @@
 .fig-line { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
 .fig-ctx { stroke: var(--ink-3); fill: none; }
 .fig-ctx-fill { fill: var(--rule); }
+.fig-dash { stroke-dasharray: 5 4; }
 .fig-chip { fill: var(--bg); stroke: var(--rule); }
 .fig-c1 { fill: var(--c1); }
 .fig-c2 { fill: var(--c2); }
@@ -64,6 +65,33 @@
 
 figure.wide { width: min(64rem, calc(100vw - 32px)); margin-left: 50%; transform: translateX(-50%); }
 figure.mini { max-width: 28rem; }
+
+/* Phones. Labels stay readable in a 343 px column (a 375 px phone less its gutters). A figure too wide for that
+   carries a second, narrow drawing in the same figure, about 360 units wide:
+     <svg class="fig-wide" viewBox="0 0 760 360">...</svg>
+     <svg class="fig-narrow" viewBox="0 0 360 620">...</svg>
+   Below 720 px only the narrow one shows. In a stepper, parts in both drawings carry the same data-step; ids must
+   differ, so a linked term lists both ids in data-tutor-ref. Print shows the wide one. */
+svg.fig-narrow { display: none; }
+@media (max-width: 720px) {
+  svg.fig-wide { display: none; }
+  svg.fig-narrow { display: block; max-width: 28rem; margin: 0 auto; }
+}
+
+/* A figure that cannot reflow (a terminal, a long timeline) scrolls sideways in its own box below 720 px instead of
+   shrinking its labels; shadows at the edges show there is more. Never on a stepper: the change could be off screen.
+   --scroll-min is the drawing's width while it scrolls (44rem keeps 12 px labels of a 760 wide viewBox at 11 px). */
+@media (max-width: 720px) {
+  figure.scroll-x {
+    overflow-x: auto;
+    background:
+      linear-gradient(to right, var(--bg) 40%, transparent) left / 1.5rem 100% no-repeat local,
+      linear-gradient(to left, var(--bg) 40%, transparent) right / 1.5rem 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, color-mix(in srgb, var(--ink) 22%, transparent), transparent) left / 0.5rem 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, color-mix(in srgb, var(--ink) 22%, transparent), transparent) right / 0.5rem 100% no-repeat scroll;
+  }
+  figure.scroll-x > svg { min-width: var(--scroll-min, 44rem); max-width: none; }
+}
 
 /* Linked terms: a term in prose and the figure parts it names light up together */
 
@@ -92,12 +120,19 @@ svg .is-linked { filter: drop-shadow(0 0 2px var(--ink)) drop-shadow(0 0 1px var
 .stepper.is-ready [data-step].is-future,
 .stepper.is-ready [data-step].is-gone { opacity: 0; pointer-events: none; }
 .stepper.is-ready:not([data-focus="off"]):not(.at-last) [data-step].is-past { opacity: 0.5; }
+/* Slots: a dashed outline that holds the place of a part still to come, so early steps show where it will go
+   instead of an empty patch. <g class="slot"> sits directly before the part's [data-step] element and hides once
+   that part has appeared, so a faded past part never shows the dashes through it. Only for a part that stays. */
+.stepper:not(.is-ready) .slot { display: none; }
+.stepper .slot:has(+ [data-step]:is(.is-current, .is-past)) { visibility: hidden; }
 
 .stepper-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0 0.3rem; font-family: var(--sans); }
 .stepper-bar button { padding: 0.3rem 0.75rem; font-size: 0.85rem; }
-.stepper-dots { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; margin: 0 0.3rem; }
-.stepper-dots button { width: 0.85rem; height: 0.85rem; padding: 0; border: 0; border-radius: 50%; background: var(--rule); }
-.stepper-dots button[aria-current="step"] { background: var(--accent); }
+.stepper-dots { display: inline-flex; flex-wrap: wrap; gap: 0; margin: 0 0.1rem; }
+/* Each dot is a 28 px target around a 14 px dot: WCAG 2.5.8 asks for at least 24 px. */
+.stepper-dots button { position: relative; width: 1.75rem; height: 1.75rem; min-height: 0; padding: 0; border: 0; border-radius: 50%; background: transparent; }
+.stepper-dots button::before { content: ""; position: absolute; inset: 0; margin: auto; width: 0.85rem; height: 0.85rem; border-radius: 50%; background: var(--rule); }
+.stepper-dots button[aria-current="step"]::before { background: var(--accent); }
 .stepper-label { font-size: 0.88rem; font-weight: 600; color: var(--ink-2); }
 
 .stepper-steps { margin: 0.4rem 0 0; padding-left: 1.4rem; font-family: var(--sans); font-size: 0.92rem; line-height: 1.5; }
@@ -169,7 +204,7 @@ figure.clip .clip-print { display: none; }
 /* Print: final frames, every caption, no controls */
 
 @media print {
-  .stepper-bar, button.replay, .explore-controls input, .clip-note { display: none !important; }
+  .stepper-bar, button.replay, .explore-controls input, .clip-note, .stepper .slot { display: none !important; }
   .stepper.is-ready .stepper-steps { list-style: decimal; padding: 0 0 0 1.4rem; background: none; }
   .stepper.is-ready .stepper-steps > li { display: list-item; margin: 0.2rem 0; }
   figure.anim * { animation: none !important; }
@@ -179,4 +214,8 @@ figure.clip .clip-print { display: none; }
   figure.clip video { display: none; }
   figure.clip .clip-print { display: block; width: 100%; height: auto; }
   .stepper, .explore, .compare, .multiples, figure.clip { break-inside: avoid; }
+  svg.fig-wide { display: block !important; }
+  svg.fig-narrow { display: none !important; }
+  figure.scroll-x { overflow: visible; background: none; }
+  figure.scroll-x > svg { min-width: 0; max-width: 100%; }
 }

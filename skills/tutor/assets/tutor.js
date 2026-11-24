@@ -1,5 +1,5 @@
 /* tutor.js: shared behaviour for every lesson in this workspace.
-   tutor-assets: 3
+   tutor-assets: 4
    Copied from the tutor skill on the first lesson; the workspace owns it from then on.
 
    With Lavish Editor present (window.lavish), submissions are queued as prompts for the tutor.
@@ -10,6 +10,11 @@
    Choices, drafts and locked predictions survive a live reload (the tutor appends Tutor notes
    mid-session) through sessionStorage, a per-viewer convenience; without storage the page still works.
    Figures (steppers, explorables, linked terms, autoplay with Replay, clips) live in visuals.js.
+
+   Links: every <a href> gets data-lavish-action, so a click follows it instead of opening an annotation
+   card, and a link that leaves the page opens in a new tab (target="_blank" rel="noopener"). Lavish shows
+   the lesson in a sandboxed frame that cannot navigate the tab, and most sites refuse to load in a frame.
+   A link that already has a target keeps it.
 
    Markup contract (see templates/lesson.html and templates/paper-lesson.html):
      <body data-lesson="0001-slug" data-paper="paper-slug (paper lessons only)">
@@ -451,6 +456,18 @@
     });
   }
 
+  /* Links: follow on click, and open other pages in a new tab (see the header) */
+
+  function initLinks() {
+    document.querySelectorAll("a[href]").forEach(function (a) {
+      a.setAttribute("data-lavish-action", "");
+      var href = a.getAttribute("href") || "";
+      if (href.charAt(0) === "#" || a.hasAttribute("target")) return;
+      a.setAttribute("target", "_blank");
+      if (!a.hasAttribute("rel")) a.setAttribute("rel", "noopener");
+    });
+  }
+
   /* Printing: open every Tutor note and show every reveal, then restore */
 
   function initPrint() {
@@ -482,6 +499,7 @@
     document.querySelectorAll("form[data-tutor-predict]").forEach(initPredict);
     document.querySelectorAll("form[data-tutor-readcheck]").forEach(initReadcheck);
     document.querySelectorAll("[data-tutor-reveal]").forEach(initReveal);
+    initLinks();
     initPrint();
   }
 
