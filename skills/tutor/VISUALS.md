@@ -16,6 +16,7 @@ Components live in `lessons/assets/visuals.css` and `visuals.js` (markup contrac
 | Interactive only where a parameter drives an outcome | Interactivity that is not the message goes unused or distracts (Hohman et al., Victor) |
 | One colour per concept, kept for the whole course | Colour becomes a cue the learner can trust (Mayer: signaling) |
 | Fewer labels and steps as learning records accumulate | Support that helps a novice slows down someone who already knows it (Kalyuga et al.: expertise reversal) |
+| Every lesson works on a phone: no sideways page scroll, labels readable at 375 px, controls easy to tap | Learners review on a phone. A figure shrunk below reading size teaches nothing, and a control too small to hit stops the lesson (WCAG 2.2, 2.5.8 target size) |
 
 ## Pick The Figure By The Question
 
@@ -69,6 +70,7 @@ When an answer shows the rule did not land, go back down a rung in the Tutor not
 - **Transitions take 0.3 to 1 s.** Nothing keeps moving after the build. `.flow` and `.pulse` stop after a few cycles.
 - **The final frame is the complete picture.** Reduced-motion settings, print and reference documents show only that frame.
 - **Move it, don't swap it.** When a step changes an existing object, select it with `[data-at="n"]` CSS, or draw it in a `tutor:step` listener. Do not hide one copy and show another.
+- **Hold the place of what is coming.** When later steps fill a frame part by part, early steps should not show a large empty patch. Put a slot right before each part that appears and stays: `<g class="slot">` with a dashed outline (`.fig-ctx .fig-dash`) and at most a short muted title. `visuals.css` hides the slot once its part appears.
 
 ## Interactivity
 
@@ -134,9 +136,25 @@ Manim renders math animation to video. Use **Manim Community Edition** (`manim`,
 
 Lavish cannot anchor a question to a point inside a video, so the step list beside the clip is the anchor. Do not copy example code from the ManimGL part of `adithya-s-k/manim_skill`: it is CC BY-NC-SA.
 
+## Phones
+
+Every lesson works on a 375 px phone held upright, as well as on a desktop. Draw for the phone first: the reading column there is 343 px (375 less two 16 px gutters).
+
+| What | Rule |
+| --- | --- |
+| The page | Never scrolls sideways. Wide content scrolls inside its own box: tables in `.table-wrap`, code in `pre`. |
+| Figure labels | At least 11 px as rendered. With the shared text classes (14 px, `small` 12 px), a drawing up to 360 units wide is safe at 343 px, and in a Tutor note, whose figures take its padding on phones. A quiz fieldset leaves about 310 px: label a figure there with the 14 px class. |
+| A figure that is wide by nature | Two drawings in one figure: `svg.fig-wide` for desktops and `svg.fig-narrow`, about 360 units wide, for phones. Stack what sits side by side; turn a row into a column; keep the concept colours, labels and step order identical. `visuals.css` swaps them below 720 px. |
+| A stepper or autoplay figure with two drawings | Both drawings carry the same `data-step` (or `.step` with `--i`) on matching parts, so one Next drives both. Ids must be unique: give narrow parts an `n` suffix (`f1-a` and `f1-a-n`) and list both in a linked term's `data-tutor-ref`. Style states with classes, not ids, so one rule covers both drawings. |
+| A figure that cannot reflow | A terminal screenshot, a long timeline: `figure.scroll-x` scrolls sideways in its own box at a readable width (`--scroll-min`, default `44rem`). Never for a stepper or an autoplay figure: the change could happen off screen. |
+| Controls | `course.css` and `visuals.css` size buttons, stepper dots, quiz rows and summaries for touch. Do not shrink them in a lesson's own styles. Links inside a sentence are exempt. |
+| Pictures | `.fig-photo` and plain `img` scale to the column; crop a photo whose detail matters at 343 px, or show the detail as its own figure. |
+
+Check every lesson with `scripts/mobile_check.py` (below). It fails on sideways scrolling, an element past the screen edge, a figure label or text under 11 px, and a control under 24 px.
+
 ## Verify Before Opening
 
-1. Render the lesson in light, dark and a 375 px wide viewport with the harness's browser or a headless browser, and look at the screenshots. If no browser is available, say so in one line.
+1. **Phone check**: `uv run --with playwright python <this skill>/scripts/mobile_check.py lessons/NNNN-<slug>.html --shot <scratch>/NNNN-375.png`, in light and again with `--theme dark`. Fix every FAIL, then look at the screenshot. On the first run on a machine, install a browser with `uv run --with playwright python -m playwright install chromium` (add `--with-deps` on Linux), or pass `--browser chrome` where Google Chrome is installed. Also render the lesson in light and dark at desktop width and look at the screenshots. If no browser is available at all, say so in one line.
 2. Step every stepper to its end. Drag every slider to both ends. Play every clip through its pauses.
 3. **Text-removal test**: cover the prose. The figure alone still shows the claim.
 4. **Squint test**: the subject is the strongest thing in the figure.
@@ -150,6 +168,7 @@ Lavish cannot anchor a question to a point inside a video, so the step list besi
 - Autoplay that loops; motion that runs before it is on screen; animation as decoration.
 - A slider with no prediction before it and no stated takeaway.
 - Dual y-axes; 3D for 2D data.
+- A wide figure shrunk to fit a phone, or a stepper that scrolls sideways.
 - A clip for something a stepper does.
 - Decorative images, icons and stock photos.
 
